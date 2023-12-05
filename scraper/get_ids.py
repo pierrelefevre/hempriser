@@ -1,42 +1,26 @@
 import hemnet
-from collections import deque
 import db
-import time
 
-
-def iterate_strings(chars):
-    queue = deque(chars)
-
-    while queue:
-        current_string = queue.popleft()
-        yield current_string
-
-        for char in chars:
-            queue.append(current_string + char)
-
-
-chars = "abcdefghijklmnopqrstuvwxyz "
-
-string_generator = iterate_strings(chars)
-
-terms = []
 while True:
-    curr = next(string_generator)
+    print("Getting pending search terms...")
+    terms = db.get_pending_search_terms()
 
-    if len(curr) > 5:
-        break
+    done = []
+    for item in terms:
+        try:
+            locs = hemnet.get_location_ids()
+            curr = item["term"]
 
-    if len(terms) > 200_000:
-        db.write_search_terms(terms)
-        terms = []
-        print(f"Wrote 100k terms for {curr}")
+            print(f"Found {len(locs)} locations for {curr}")
+            if len(locs) > 0:
+                db.write_locations(locs)
+                print(f"Wrote {len(locs)} locations for {curr}")
 
-    terms.append({"term": curr})
+            done.append(curr)
 
-# locs = hemnet.get_location_ids(curr)
+        except Exception as e:
+            print(e)
+            print(f"Failed to get locations for {curr}")
 
-# print(f"Found {len(locs)} locations for {curr}")
-# if len(locs) > 0:
-#     db.write_locations(locs)
-#     print(f"Wrote {len(locs)} locations for {curr}")
-#     time.sleep(1)
+    print(f"Marking {len(done)} search terms as done...")
+    db.mark_search_terms_as_done(done)

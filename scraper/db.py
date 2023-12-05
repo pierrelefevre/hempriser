@@ -134,6 +134,13 @@ def marks_raw_listings_as_done(urls: list):
     )
 
 
+def mark_search_terms_as_done(terms: list):
+    c["search-terms"].update_many(
+        {"term": {"$in": terms}},
+        {"$set": {"status": "done"}},
+    )
+
+
 def write_search_terms(terms: list):
     try:
         c["search-terms"].insert_many(terms, ordered=False)
@@ -202,6 +209,16 @@ def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
         .sort("createdAt", -1)
         .skip(n * page)
         .limit(n)
+    )
+    return list(res)
+
+
+def get_pending_search_terms(n: int = 500):
+    res = c["search-terms"].aggregate(
+        [
+            {"$match": {"status": "pending"}},
+            {"$sample": {"size": n}},
+        ]
     )
     return list(res)
 
