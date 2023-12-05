@@ -5,7 +5,7 @@ reset = {
     "listings-raw": False,
     "urls": False,
     "locations": False,
-    "search-terms": True,
+    "search-terms": False,
 }
 
 for collection_name, should_reset in reset.items():
