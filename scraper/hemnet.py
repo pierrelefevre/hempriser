@@ -82,7 +82,7 @@ def get_single_listing(url: str):
         json_data = json.loads(json_raw)
         return json_data
 
-    except:
+    except Exception:
         return None
 
 

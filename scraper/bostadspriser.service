@@ -1,0 +1,12 @@
+[Unit]
+Description=Bostadspriser Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/start-all.sh 2
+User=root
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

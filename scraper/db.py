@@ -12,6 +12,22 @@ c = {}
 def setup():
     print("Setting up database connection...")
 
+    required_env_vars = [
+        "MONGO_USER",
+        "MONGO_SECRET",
+        "MONGO_HOST",
+    ]
+
+    missing_some = False
+    for var in required_env_vars:
+        if var not in os.environ:
+            print(f"Missing {var} in .env")
+            missing_some = True
+
+    if missing_some:
+        exit()
+
+
     db_user = os.getenv("MONGO_USER")
     db_pass = os.getenv("MONGO_SECRET")
 
@@ -33,6 +49,7 @@ def setup():
     c["urls"] = urls_collection
     c["locations"] = locations_collection
     c["search-terms"] = search_terms_collection
+
 
 
 setup()
