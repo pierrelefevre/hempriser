@@ -1,0 +1,32 @@
+{
+    "districts": [
+        "Gottfridsberg",
+        "Link\u00f6ping Innerstaden-Hejdeg\u00e5rden",
+        "\u00c5bylund",
+        "Link\u00f6ping"
+    ],
+    "images": [],
+    "county": "\u00d6sterg\u00f6tlands l\u00e4n",
+    "municipality": "Link\u00f6pings kommun",
+    "country": "Sverige",
+    "postalCity": "Link\u00f6ping",
+    "street": "\u00c5bylundsgatan",
+    "city": "Link\u00f6ping t\u00e4tort",
+    "id": "21079275",
+    "title": "\u00c5bylundsgatan 56",
+    "askingPrice": 1695000,
+    "squareMeterPrice": 33235,
+    "fee": 2682,
+    "livingArea": 51,
+    "rooms": 2,
+    "constructionYear": 1953,
+    "isForeclosure": false,
+    "isNewConstruction": false,
+    "runningCosts": 3300,
+    "housingForm": "L\u00e4genhet",
+    "closestWaterDistanceMeters": 1900,
+    "timesViewed": 12,
+    "postCode": "58236",
+    "housingCooperative": "Riksbyggen BRF Link\u00f6pingshus nr 10",
+    "hasBalcony": true
+}

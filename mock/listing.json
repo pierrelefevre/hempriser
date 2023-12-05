@@ -1,0 +1,624 @@
+{
+    "props": {
+        "pageProps": {
+            "__APOLLO_STATE__": {
+                "Location:17747": {
+                    "__typename": "Location",
+                    "id": "17747",
+                    "fullName": "Östergötlands län",
+                    "type": "COUNTY"
+                },
+                "Location:17847": {
+                    "__typename": "Location",
+                    "id": "17847",
+                    "fullName": "Linköpings kommun",
+                    "type": "MUNICIPALITY"
+                },
+                "Location:473674": {
+                    "__typename": "Location",
+                    "id": "473674",
+                    "fullName": "Gottfridsberg",
+                    "type": "DISTRICT"
+                },
+                "Location:473675": {
+                    "__typename": "Location",
+                    "id": "473675",
+                    "fullName": "Linköping Innerstaden-Hejdegården",
+                    "type": "DISTRICT"
+                },
+                "Location:924009": {
+                    "__typename": "Location",
+                    "id": "924009",
+                    "fullName": "Åbylund",
+                    "type": "DISTRICT"
+                },
+                "Location:940180": {
+                    "__typename": "Location",
+                    "id": "940180",
+                    "fullName": "Linköping",
+                    "type": "DISTRICT"
+                },
+                "BrokerAgency:2002": {
+                    "__typename": "BrokerAgency",
+                    "name": "Länsförsäkringar Fastighetsförmedling Linköping",
+                    "id": "2002",
+                    "offersSellingPrices": true,
+                    "websiteUrl": "http://lansfast.se/linkoping?utm_source=hemnet\u0026utm_medium=referral",
+                    "isKronofogden": false,
+                    "email": "linkoping@lansfast.se",
+                    "phoneNumber": "013-24 40 30",
+                    "developer": false,
+                    "brokerAgencyHemnetUrl": "https://www.hemnet.se/maklare/lansforsakringar-fastighetsformedling-linkoping-2002",
+                    "brokerCustomization": {
+                        "__typename": "BrokerCustomization",
+                        "enhancedBrokerCard": false,
+                        "compactLogoUrl": "https://bilder.hemnet.se/images/broker_logo_2/73/c6/73c63376473b74a25e13711a82fcae60.png",
+                        "logoUrl({\"format\":\"BROKER_CUSTOMIZATION_LARGE\"})": "https://bilder.hemnet.se/images/broker_logo/0d/11/0d116b4f041f3d87c13fb4723eb1e16f.png",
+                        "bannerUrl": "https://bilder.hemnet.se/images/broker_banner/5b/c2/5bc2e2a95b763b056c5816aba6d960c9.jpg",
+                        "bannerLink": "https://www.lansfast.se/salja/"
+                    }
+                },
+                "Broker:22676": {
+                    "__typename": "Broker",
+                    "name": "Darya Fuad",
+                    "id": "22676",
+                    "email": "darya.fuad@lansfast.se",
+                    "phoneNumber": "0730-23 32 89",
+                    "description": "När du vänder dig till mig för konsultation möts du av en lösningsorienterad, prestigelös och professionell mäklare.\r\nJag kan garantera trygghet, effektivitet, målmedvetenhet och framför allt hårt arbete.\r\nMed hjärtat på rätt plats och ett personligt engagemang kommer jag att kvalitetssäkra er bostadsaffär och överträffa era förväntningar. \r\nMin främsta styrka är ett genuint intresse för affärer och människor. Med stor erfarenhet av försäljning har jag förstått att ingen affär är den andra lik.",
+                    "hasActiveProfile": true,
+                    "primaryBrokerAgency": {
+                        "__ref": "BrokerAgency:2002"
+                    },
+                    "profileImage": {
+                        "__typename": "BrokerProfileImage",
+                        "url({\"format\":\"BROKER_PROFILE_LARGE\"})": "https://bilder.hemnet.se/images/broker_profile_large/2f/75/2f75eba06db2b31ce66d7038c8a858e0.jpg"
+                    },
+                    "awards": [
+                    ],
+                    "canonicalUrl": "https://www.hemnet.se/maklare/lansforsakringar-fastighetsformedling-linkoping-2002/darya-fuad-22676"
+                },
+                "OpenHouse:36705438": {
+                    "__typename": "OpenHouse",
+                    "id": "36705438",
+                    "start": "1702485000.0",
+                    "end": "1702488600.0",
+                    "description": "Enbart bokad visning. Anmäl dig via hemsidan alternativt på 073-023 32 89. Varmt välkommen!",
+                    "isOnlyDate": false
+                },
+                "ListingCard:20862657": {
+                    "__typename": "ListingCard",
+                    "id": "20862657"
+                },
+                "ListingCard:21030535": {
+                    "__typename": "ListingCard",
+                    "id": "21030535"
+                },
+                "ListingCard:19985355": {
+                    "__typename": "ListingCard",
+                    "id": "19985355"
+                },
+                "ListingCard:20115895": {
+                    "__typename": "ListingCard",
+                    "id": "20115895"
+                },
+                "ListingCard:20583775": {
+                    "__typename": "ListingCard",
+                    "id": "20583775"
+                },
+                "ListingCard:20796077": {
+                    "__typename": "ListingCard",
+                    "id": "20796077"
+                },
+                "Location:17691": {
+                    "__typename": "Location",
+                    "fullName": "Sverige",
+                    "type": "COUNTRY",
+                    "id": "17691"
+                },
+                "Location:19472": {
+                    "__typename": "Location",
+                    "fullName": "Linköping",
+                    "type": "POSTAL_CITY",
+                    "id": "19472"
+                },
+                "Location:501762": {
+                    "__typename": "Location",
+                    "fullName": "Åbylundsgatan",
+                    "type": "STREET",
+                    "id": "501762"
+                },
+                "Location:898708": {
+                    "__typename": "Location",
+                    "fullName": "Linköping tätort",
+                    "type": "CITY",
+                    "id": "898708"
+                },
+                "ActivePropertyListing:21079275": {
+                    "__typename": "ActivePropertyListing",
+                    "id": "21079275",
+                    "title": "Åbylundsgatan 56",
+                    "breadcrumbs": [
+                        {
+                            "__typename": "Breadcrumb",
+                            "label": "Östergötlands län",
+                            "path": "/bostader?housing_form_groups%5B%5D=apartments\u0026location_ids%5B%5D=17747",
+                            "totalHits": 907,
+                            "trackingValue": "Län"
+                        },
+                        {
+                            "__typename": "Breadcrumb",
+                            "label": "Linköpings kommun",
+                            "path": "/bostader?housing_form_groups%5B%5D=apartments\u0026location_ids%5B%5D=17847",
+                            "totalHits": 318,
+                            "trackingValue": "Kommun"
+                        },
+                        {
+                            "__typename": "Breadcrumb",
+                            "label": "Åbylund",
+                            "path": "/bostader?housing_form_groups%5B%5D=apartments\u0026location_ids%5B%5D=924009",
+                            "totalHits": 1,
+                            "trackingValue": "Område"
+                        }
+                    ],
+                    "listingHemnetUrl": "https://www.hemnet.se/bostad/lagenhet-2rum-gottfridsberg-linkopings-kommun-abylundsgatan-56-21079275",
+                    "numberOfRooms": 2,
+                    "streetAddress": "Åbylundsgatan 56",
+                    "region": {
+                        "__ref": "Location:17747"
+                    },
+                    "postCode": "58236",
+                    "tenure": {
+                        "__typename": "Tenure",
+                        "name": "Bostadsrätt",
+                        "symbol": "TENANT_OWNERSHIP"
+                    },
+                    "municipality": {
+                        "__ref": "Location:17847"
+                    },
+                    "districts": [
+                        {
+                            "__ref": "Location:473674"
+                        },
+                        {
+                            "__ref": "Location:473675"
+                        },
+                        {
+                            "__ref": "Location:924009"
+                        },
+                        {
+                            "__ref": "Location:940180"
+                        }
+                    ],
+                    "askingPrice": {
+                        "__typename": "Money",
+                        "formatted": "1 695 000 kr",
+                        "amount": 1695000,
+                        "currency": {
+                            "__typename": "Currency",
+                            "code": "SEK"
+                        }
+                    },
+                    "squareMeterPrice": {
+                        "__typename": "Money",
+                        "formatted": "33 235 kr/m²",
+                        "amount": 33235
+                    },
+                    "fee": {
+                        "__typename": "Money",
+                        "formatted": "2 682 kr",
+                        "amount": 2682
+                    },
+                    "yearlyArrendeFee": null,
+                    "yearlyLeaseholdFee": null,
+                    "runningCosts": {
+                        "__typename": "Money",
+                        "formatted": "3 300 kr",
+                        "amount": 3300
+                    },
+                    "legacyConstructionYear": "1953",
+                    "area": "Gottfridsberg",
+                    "brokerAgency": {
+                        "__ref": "BrokerAgency:2002"
+                    },
+                    "broker": {
+                        "__ref": "Broker:22676"
+                    },
+                    "livingArea": 51,
+                    "isForeclosure": false,
+                    "isNewConstruction": false,
+                    "isNewConstructionProject": false,
+                    "isUpcoming": false,
+                    "formattedLivingArea": "51 m²",
+                    "supplementalArea": null,
+                    "formattedSupplementalArea": null,
+                    "formattedLandArea": null,
+                    "housingForm": {
+                        "__typename": "HousingForm",
+                        "groups": [
+                            "APARTMENTS"
+                        ],
+                        "name": "Lägenhet",
+                        "symbol": "APARTMENT",
+                        "primaryGroup": "APARTMENTS"
+                    },
+                    "labels": [
+                        {
+                            "__typename": "Label",
+                            "identifier": "HIGHLIGHTED_SHOWING",
+                            "category": "STATE",
+                            "text": "Ons 13 dec kl 17:30"
+                        },
+                        {
+                            "__typename": "Label",
+                            "identifier": "PREMIUM",
+                            "category": "PRODUCT",
+                            "text": "Premium"
+                        },
+                        {
+                            "__typename": "Label",
+                            "identifier": "BALCONY",
+                            "category": "FEATURE",
+                            "text": "Balkong"
+                        }
+                    ],
+                    "relevantAmenities": [
+                        {
+                            "__typename": "BalconyAmenity",
+                            "kind": "BALCONY",
+                            "isAvailable": true,
+                            "title": "Balkong"
+                        },
+                        {
+                            "__typename": "ElevatorAmenity",
+                            "kind": "ELEVATOR",
+                            "isAvailable": false,
+                            "title": "Hiss"
+                        }
+                    ],
+                    "adTargeting": "{\"item_types\":[7],\"rooms\":[3],\"price\":[2],\"municipality\":[125],\"region\":[21],\"country\":[1],\"water_distance\":[\"501-\"],\"property_price\":1695000,\"property_address\":\"Åbylundsgatan 56\",\"property_living_area\":51,\"property_zipcode\":\"58236\"}",
+                    "publishedAt": "1701767220.287",
+                    "thumbnail": {
+                        "__typename": "ListingImage",
+                        "url({\"format\":\"ITEMGALLERY_L\"})": "https://bilder.hemnet.se/images/itemgallery_L/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg"
+                    },
+                    "isBiddingOngoing": false,
+                    "attachments": [
+                    ],
+                    "daysOnHemnet": 0,
+                    "description": "Välkommen till denna fantastiska 2:a i det omtyckta området Åbylund. Denna ljusa och fräscha lägenhet har ett härligt läge med en solig balkong som gör att du kan njuta av solen från förmiddagen till sen eftermiddag\r\n\r\nNär du kliver in i lägenheten möts du av en välkomnande hall med parkettgolv och tillräckligt med utrymme för att hänga av dina ytterkläder. Intill hallen finner du ett kök med gott om utrymme för matbord och stolar. Köket är utrustat med spis, fläkt, ugn och diskmaskin. Här finns det gott om förvaring i form av under- och överskåp. Vardagsrummet är stort och rymligt med fönster som ger en naturlig ljuskälla och en härlig atmosfär i rummet. Det finns också en utgång till en härlig balkong där du kan njuta av eftermiddagssolen. Balkongen erbjuder utsikt över området.\r\n\r\nSovrummet erbjuder gott om förvaringsutrymme och plats för en dubbelsäng. Badrummet renoverades 2015 och erbjuder bekvämligheter såsom golvvärme, handdukstork och tvättmaskin samt spotlights. \r\n\r\nHär bor du till en låg månadskostnad i en ekonomiskt stabil förening med låg belåning och väl underhållna fastigheter. Här finns också goda faciliteter såsom gemensamma tvättstugor, gym, bastu, festlokal och övernattningslägenhet.\r\n\r\nHär njuter du av ett ypperligt läge mellan City och Universitetet, perfekt för studenten eller förstagångsköparen. På bekvämt avstånd når du centrala Linköping och Tornby köpcentrum som tillsammans erbjuder komplett serviceutbud. Området erbjuder goda bussförbindelser med övriga staden och genomkorsas av flera smidiga cykelvägar. För er som värdesätter närheten till natur och rekreation kan läget knappast bli bättre då området är beläget strax intill Rydskogen där ni bland annat hittar löpspår, utegym, diskgolfbana och strövstigar.\r\n\r\nVälkommen hem! ",
+                    "energyClassification": null,
+                    "formattedFloor": "1 av 3, hiss finns ej",
+                    "biddingStarted": false,
+                    "verifiedBidding": null,
+                    "photoAttribution": {
+                        "__typename": "PhotoAttribution",
+                        "photoAgencyName": "Husfoto",
+                        "photographerName": "Daniel Larsson",
+                        "logoUrl": "https://assets.hemnet.se/assets/images/photo-agencies/husfoto-logo.png",
+                        "websiteUrl": "https://www.husfoto.se/?utm_source=hemnet\u0026utm_medium=referral"
+                    },
+                    "images({\"limit\":300})": {
+                        "__typename": "ListingImageResults",
+                        "images": [
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/3d/91/3d915c12bd8a6433f210674978675bb0.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/3d/91/3d915c12bd8a6433f210674978675bb0.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/3d/91/3d915c12bd8a6433f210674978675bb0.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/06/8f/068f8252a8f99a8d7d12d68edec6ab80.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/06/8f/068f8252a8f99a8d7d12d68edec6ab80.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/06/8f/068f8252a8f99a8d7d12d68edec6ab80.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/29/be/29be84753f17b7a1fdb483a7ef33bc13.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/29/be/29be84753f17b7a1fdb483a7ef33bc13.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/29/be/29be84753f17b7a1fdb483a7ef33bc13.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/35/67/35677cc651f741efed7cc9e45b0e0db8.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/35/67/35677cc651f741efed7cc9e45b0e0db8.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/35/67/35677cc651f741efed7cc9e45b0e0db8.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/30/2c/302cef82356472e56ef37a1ac362f64a.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/30/2c/302cef82356472e56ef37a1ac362f64a.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/30/2c/302cef82356472e56ef37a1ac362f64a.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/26/04/2604d2c7eca1961951f87e62bf0ccb16.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/26/04/2604d2c7eca1961951f87e62bf0ccb16.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/26/04/2604d2c7eca1961951f87e62bf0ccb16.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/5c/32/5c3282f0fea7f048cd0610400940418e.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/5c/32/5c3282f0fea7f048cd0610400940418e.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/5c/32/5c3282f0fea7f048cd0610400940418e.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/89/66/896677e4597525838c1e5596a458b161.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/89/66/896677e4597525838c1e5596a458b161.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/89/66/896677e4597525838c1e5596a458b161.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/b5/af/b5af6748fadd82ca9e4f5e9b3d6f46bf.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/b5/af/b5af6748fadd82ca9e4f5e9b3d6f46bf.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/b5/af/b5af6748fadd82ca9e4f5e9b3d6f46bf.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/f0/4a/f04ac6841922de2cdbffe9d62dc59574.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/f0/4a/f04ac6841922de2cdbffe9d62dc59574.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/f0/4a/f04ac6841922de2cdbffe9d62dc59574.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/ea/62/ea627c19aa518ad92d38ffd25e89d1dd.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/ea/62/ea627c19aa518ad92d38ffd25e89d1dd.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/ea/62/ea627c19aa518ad92d38ffd25e89d1dd.jpg",
+                                "originalWidth": 1365,
+                                "originalHeight": 2048,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/30/f0/30f0fcc3a4a382e6bbe338cc7619e74c.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/30/f0/30f0fcc3a4a382e6bbe338cc7619e74c.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/30/f0/30f0fcc3a4a382e6bbe338cc7619e74c.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/ca/7d/ca7d43d13b8ba8ae10b9b44d1af0839f.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/ca/7d/ca7d43d13b8ba8ae10b9b44d1af0839f.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/ca/7d/ca7d43d13b8ba8ae10b9b44d1af0839f.jpg",
+                                "originalWidth": 1365,
+                                "originalHeight": 2048,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/92/b9/92b967f210d1af03732d3c07e46d1795.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/92/b9/92b967f210d1af03732d3c07e46d1795.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/92/b9/92b967f210d1af03732d3c07e46d1795.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/ac/84/ac845e0d49053fa1e7f18514a64fab1a.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/ac/84/ac845e0d49053fa1e7f18514a64fab1a.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/ac/84/ac845e0d49053fa1e7f18514a64fab1a.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/d0/36/d036529111d93d718449e194df648644.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/d0/36/d036529111d93d718449e194df648644.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/d0/36/d036529111d93d718449e194df648644.jpg",
+                                "originalWidth": 1365,
+                                "originalHeight": 2048,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/84/b0/84b0a4d517c418b7c81860ea654acff0.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/84/b0/84b0a4d517c418b7c81860ea654acff0.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/84/b0/84b0a4d517c418b7c81860ea654acff0.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/48/fb/48fbf4bc492c9bd12a08f6f95c36114e.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/48/fb/48fbf4bc492c9bd12a08f6f95c36114e.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/48/fb/48fbf4bc492c9bd12a08f6f95c36114e.jpg",
+                                "originalWidth": 2048,
+                                "originalHeight": 1365,
+                                "labels": [
+                                ]
+                            },
+                            {
+                                "__typename": "ListingImage",
+                                "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/2b/4d/2b4d8e55153573128eb357d68d4206fb.jpg",
+                                "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/2b/4d/2b4d8e55153573128eb357d68d4206fb.jpg",
+                                "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/2b/4d/2b4d8e55153573128eb357d68d4206fb.jpg",
+                                "originalWidth": 1240,
+                                "originalHeight": 1754,
+                                "labels": [
+                                    "FLOOR_PLAN"
+                                ]
+                            }
+                        ]
+                    },
+                    "listingBrokerUrl": "https://www.lansfast.se/object-redirect/?guid=5ERBHHP5PP30M247\u0026objectType=CMBOLGH\u0026utm_source=hemnet\u0026utm_medium=referral",
+                    "listingBrokerGalleryUrl": "https://www.lansfast.se/object-redirect/?utm_source=hemnet\u0026utm_medium=referral\u0026guid=5ERBHHP5PP30M247\u0026objectType=CMBOLGH\u0026images=true",
+                    "liveStreams({\"scope\":\"ACTIVE\"})": [
+                    ],
+                    "liveStreams({\"scope\":\"ENDED\"})": [
+                    ],
+                    "timesViewed": 12,
+                    "priceChange": null,
+                    "upcomingOpenHouses": [
+                        {
+                            "__ref": "OpenHouse:36705438"
+                        }
+                    ],
+                    "county": {
+                        "__ref": "Location:17747"
+                    },
+                    "isProject": false,
+                    "isProjectUnit": false,
+                    "activePackage": "PREMIUM",
+                    "landArea": null,
+                    "images({\"limit\":0})": {
+                        "__typename": "ListingImageResults",
+                        "total": 20
+                    },
+                    "floorPlanImages": [
+                        {
+                            "__typename": "ListingImage",
+                            "labels": [
+                                "FLOOR_PLAN"
+                            ]
+                        }
+                    ],
+                    "attachment({\"type\":\"VIDEO\"})": null,
+                    "attachment({\"type\":\"THREE_D\"})": null,
+                    "sellerPackageRecommendation": {
+                        "__typename": "SellerPackageRecommendation",
+                        "packageCode": "premium",
+                        "packageName": "Hemnet Premium"
+                    },
+                    "similarListingCards({\"limit\":6})": [
+                        {
+                            "__ref": "ListingCard:20862657"
+                        },
+                        {
+                            "__ref": "ListingCard:21030535"
+                        },
+                        {
+                            "__ref": "ListingCard:19985355"
+                        },
+                        {
+                            "__ref": "ListingCard:20115895"
+                        },
+                        {
+                            "__ref": "ListingCard:20583775"
+                        },
+                        {
+                            "__ref": "ListingCard:20796077"
+                        }
+                    ],
+                    "closestWaterDistanceMeters": 1900,
+                    "coastlineDistanceMeters": null,
+                    "housingCooperative": {
+                        "__typename": "HousingCooperative",
+                        "name": "Riksbyggen BRF Linköpingshus nr 10"
+                    },
+                    "locations": [
+                        {
+                            "__ref": "Location:17691"
+                        },
+                        {
+                            "__ref": "Location:17747"
+                        },
+                        {
+                            "__ref": "Location:17847"
+                        },
+                        {
+                            "__ref": "Location:19472"
+                        },
+                        {
+                            "__ref": "Location:473674"
+                        },
+                        {
+                            "__ref": "Location:473675"
+                        },
+                        {
+                            "__ref": "Location:501762"
+                        },
+                        {
+                            "__ref": "Location:898708"
+                        },
+                        {
+                            "__ref": "Location:924009"
+                        },
+                        {
+                            "__ref": "Location:940180"
+                        }
+                    ]
+                },
+                "ROOT_QUERY": {
+                    "__typename": "Query",
+                    "listing({\"id\":\"21079275\"})": {
+                        "__ref": "ActivePropertyListing:21079275"
+                    }
+                }
+            }
+        },
+        "__N_SSP": true
+    },
+    "page": "/bostad/[listingSlug]",
+    "query": {
+        "listingSlug": "lagenhet-2rum-gottfridsberg-linkopings-kommun-abylundsgatan-56-21079275"
+    },
+    "buildId": "gKWrYB1G-NZlEuwWLGdLF",
+    "isFallback": false,
+    "isExperimentalCompile": false,
+    "gssp": true,
+    "scriptLoader": [
+    ]
+}
