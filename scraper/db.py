@@ -27,7 +27,6 @@ def setup():
     if missing_some:
         exit()
 
-
     db_user = os.getenv("MONGO_USER")
     db_pass = os.getenv("MONGO_SECRET")
 
@@ -37,19 +36,13 @@ def setup():
 
     db = client["bostadspriser"]
 
-    listings_raw_collection = db["listings-raw"]
-    listings_collection = db["listings"]
-    urls_collection = db["urls"]
-    locations_collection = db["locations"]
-    search_terms_collection = db["search-terms"]
-
     global c
-    c["listings-raw"] = listings_raw_collection
-    c["listings"] = listings_collection
-    c["urls"] = urls_collection
-    c["locations"] = locations_collection
-    c["search-terms"] = search_terms_collection
-
+    c["listings-raw"] = db["listings-raw"]
+    c["listings"] = db["listings"]
+    c["urls"] = db["urls"]
+    c["locations"] = db["locations"]
+    c["search-terms"] = db["search-terms"]
+    c["inflation"] = db["inflation"]
 
 
 setup()
@@ -107,6 +100,15 @@ def write_urls(urls: list):
 
     try:
         c["urls"].insert_many(write, ordered=False)
+    except mongo.errors.BulkWriteError as e:
+        pass
+    except mongo.errors.DuplicateKeyError:
+        pass
+
+
+def write_inflations(inflations: list):
+    try:
+        c["inflation"].insert_many(inflations, ordered=False)
     except mongo.errors.BulkWriteError as e:
         pass
     except mongo.errors.DuplicateKeyError:
@@ -221,6 +223,16 @@ def get_pending_search_terms(n: int = 500):
         ]
     )
     return list(res)
+
+
+def get_inflation(year: int, month: int):
+    if month < 10:
+        key = f"{year}M0{month}"
+    else:
+        key = f"{year}M{month}"
+
+    res = c["inflation"].find_one({"id": key})
+    return res
 
 
 # Patch
