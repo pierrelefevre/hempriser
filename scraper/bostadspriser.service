@@ -3,7 +3,7 @@ Description=Bostadspriser Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/start-all.sh 2
+ExecStart=/usr/bin/start-all.sh 25
 User=root
 Restart=on-failure
 RestartSec=10

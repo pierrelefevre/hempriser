@@ -21,14 +21,17 @@ if [ "$#" -ne 1 ] || ! is_positive_integer "$1"; then
     exit 1
 fi
 
+# Pip install deps
+/usr/bin/python -m pip install -r /etc/scraper/requirements.txt
+
 threads=$1
 
 # Starting Python scripts in the specified number of threads
 for i in $(seq 1 $threads); do
-    python /opt/bostadspriser/scraper/get_ids.py &
-    # python /opt/bostadspriser/scraper/get_listings_clean.py &
-    python /opt/bostadspriser/scraper/get_listings_raw.py &
-    python /opt/bostadspriser/scraper/get_urls.py &
+    python /etc/scraper/get_ids.py &
+    # python /etc/scraper/get_listings_clean.py &
+    python /etc/scraper/get_listings_raw.py &
+    python /etc/scraper/get_urls.py &
 done
 
 # Wait for all background jobs to finish

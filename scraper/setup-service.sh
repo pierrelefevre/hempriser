@@ -6,21 +6,33 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# Path to the systemd service file
+# Setup paths
 SERVICE_FILE="$(dirname "$(realpath "$0")")/bostadspriser.service"
 SERVICE_DEST="/etc/systemd/system/bostadspriser.service"
 
 START_ALL_FILE="$(dirname "$(realpath "$0")")/start-all.sh"
 START_ALL_DEST="/usr/bin/start-all.sh"
 
-sudo cp "$SERVICE_FILE" "$SERVICE_DEST"
-sudo cp "$START_ALL_FILE" "$START_ALL_DEST"
+SCRAPER_DIR="/etc"
+SCRAPER_SYMLINK_TARGET="${SCRAPER_DIR}/scraper"
+
+# Copy service file
+cp "$SERVICE_FILE" "$SERVICE_DEST"
+
+# Copy start-all script
+cp "$START_ALL_FILE" "$START_ALL_DEST"
+
+# Copy scraper context with .env
+## Check if the symbolic link already exists
+if [ ! -L "$SCRAPER_SYMLINK_TARGET" ]; then
+    ln -s "$(pwd)" "$SCRAPER_SYMLINK_TARGET"
+fi
 
 # Reload systemd to recognize new service
-sudo systemctl daemon-reload
+systemctl daemon-reload
 
 # Enable and start the service
-sudo systemctl enable bostadspriser.service
-sudo systemctl start bostadspriser.service
+systemctl enable bostadspriser.service
+systemctl start bostadspriser.service
 
 echo "Service installed and started successfully."
