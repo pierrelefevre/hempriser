@@ -33,6 +33,6 @@ systemctl daemon-reload
 
 # Enable and start the service
 systemctl enable bostadspriser.service
-systemctl start bostadspriser.service
+systemctl restart bostadspriser.service
 
 echo "Service installed and started successfully."
