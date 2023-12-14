@@ -142,6 +142,68 @@ def get_location_ids(query: str = "gamla stan", limit: int = 2000):
     return locs
 
 
+def get_coords(url):
+    try:
+        endpoint = "https://www.hemnet.se/graphql"
+
+        headers = {
+            "authority": "www.hemnet.se",
+            "accept": "*/*",
+            "accept-language": "en-SE,en;q=0.9,sv-SE;q=0.8,sv;q=0.7,fr-FR;q=0.6,fr;q=0.5,en-GB;q=0.4,en-US;q=0.3",
+            "cache-control": "no-cache",
+            "content-type": "application/json",
+            "dnt": "1",
+            "hemnet-application-version": "www-0.0.1",
+            "origin": "https://www.hemnet.se",
+            "pragma": "no-cache",
+            "referer": "https://www.hemnet.se/bostader",
+            "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Linux"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "sec-gpc": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        }
+
+        data = {
+            "operationName": "mapAndTravelTimes",
+            "variables": {"id": url.split("-")[-1]},
+            "query": "query mapAndTravelTimes($id: ID!){listing(id: $id){coordinates{lat long}}}",
+        }
+        response = requests.post(endpoint, headers=headers, json=data)
+        return response.json()["data"]["listing"]["coordinates"]
+
+    except Exception:
+        try:
+            # query saleMap($id: ID!) {
+            #   sales(ids: [$id]) {
+            #     id
+            #     coordinates {
+            #       lat
+            #       long
+            #       __typename
+            #     }
+            #     housingForm {
+            #       name
+            #       symbol
+            #       __typename
+            #     }
+            #     __typename
+            #   }
+            #
+            data = {
+                "operationName": "saleMap",
+                "variables": {"id": url.split("-")[-1]},
+                "query": "query saleMap($id: ID!) {sales(ids: [$id]){id coordinates{lat long}}}",
+            }
+            response = requests.post(endpoint, headers=headers, json=data)
+            return response.json()["data"]["sales"][0]["coordinates"]
+        except Exception:
+            return None
+
+
 if __name__ == "__main__":
-    urls = get_urls(location_id="473360", page=1)
-    print(json.dumps(urls))
+    url = "https://www.hemnet.se/salda/radhus-7rum-helenelund-fagelsangen-sollentuna-kommun-sorgardsvagen-15-1395137"
+    print(json.dumps(get_coords(url)))

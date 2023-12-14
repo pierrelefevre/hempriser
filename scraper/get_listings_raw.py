@@ -2,8 +2,6 @@ import hemnet
 import db
 import time
 
-page = 0
-
 i = 0
 while True:
     urls = db.get_pending_urls(n=100, random=True)

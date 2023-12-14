@@ -6,8 +6,8 @@ def clean_listing(json_data):
     output = {}
 
     # prepare empty lists
-    output["districts"] = []
-    output["images"] = []
+    # output["districts"] = []
+    # output["images"] = []
 
     # loop through the json data
     base = json_data["props"]["pageProps"]["__APOLLO_STATE__"]
@@ -21,8 +21,8 @@ def clean_listing(json_data):
             if value["type"] == "COUNTY":
                 output["county"] = value["fullName"]
 
-            if value["type"] == "DISTRICT":
-                output["districts"].append(value["fullName"])
+            if value["type"] == "DISTRICT" and "districts" in output:
+                output["districts"] = value["fullName"]
 
             if value["type"] == "CITY":
                 output["city"] = value["fullName"]
@@ -84,13 +84,13 @@ def clean_listing(json_data):
             #                     ]
             #                 },
 
-            for key2, value2 in value.items():
-                if key2.startswith("images") and "images" in value2.keys():
-                    for image in value2["images"]:
-                        for imageKey in image.keys():
-                            if "url" in imageKey and "WIDTH" in imageKey:
-                                output["images"].append(image[imageKey])
-                                break
+            # for key2, value2 in value.items():
+            #     if key2.startswith("images") and "images" in value2.keys():
+            #         for image in value2["images"]:
+            #             for imageKey in image.keys():
+            #                 if "url" in imageKey and "WIDTH" in imageKey:
+            #                     output["images"].append(image[imageKey])
+            #                     break
 
     return output
 
@@ -129,5 +129,5 @@ def clean_mock():
 
 
 if __name__ == "__main__":
-    # clean_mock()
-    clean_all()
+    clean_mock()
+    # clean_all()

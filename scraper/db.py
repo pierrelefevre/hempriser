@@ -34,6 +34,8 @@ def setup():
         f"mongodb://{db_user}:{db_pass}@{os.getenv('MONGO_HOST')}"
     )
 
+    client.server_info()
+
     db = client["bostadspriser"]
 
     global c
@@ -56,6 +58,18 @@ def write_raw_listing(listing: dict):
 
     try:
         c["listings-raw"].insert_one(listing)
+    except mongo.errors.BulkWriteError as e:
+        pass
+    except mongo.errors.DuplicateKeyError:
+        pass
+
+
+def write_raw_listing_coord(url: str, coord: dict):
+    try:
+        c["listings-raw"].update_one(
+            {"url": url},
+            {"$set": {"coord": coord}},
+        )
     except mongo.errors.BulkWriteError as e:
         pass
     except mongo.errors.DuplicateKeyError:
@@ -212,6 +226,27 @@ def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
         .skip(n * page)
         .limit(n)
     )
+    return list(res)
+
+
+def get_pending_listings_without_coord(n: int = 0, page: int = 0, random: bool = False):
+    if random:
+        res = c["listings-raw"].aggregate(
+            [
+                {"$match": {"coord": {"$exists": False}}},
+                {"$sample": {"size": n}},
+            ]
+        )
+        return list(res)
+
+    res = (
+        c["listings-raw"]
+        .find({"coord": {"$exists": False}})
+        .sort("createdAt", -1)
+        .skip(n * page)
+        .limit(n)
+    )
+
     return list(res)
 
 
