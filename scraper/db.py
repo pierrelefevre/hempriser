@@ -45,6 +45,7 @@ def setup():
     c["locations"] = db["locations"]
     c["search-terms"] = db["search-terms"]
     c["inflation"] = db["inflation"]
+    c["status"] = db["status"]
 
 
 setup()
@@ -164,6 +165,14 @@ def write_search_terms(terms: list):
         pass
     except mongo.errors.DuplicateKeyError:
         pass
+
+
+def update_status(hostname: str, timestamp: datetime.datetime, status: str):
+    c["status"].update_one(
+        {"hostname": hostname},
+        {"$set": {"timestamp": timestamp, "status": status}},
+        upsert=True,
+    )
 
 
 # Read
