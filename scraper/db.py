@@ -77,7 +77,7 @@ def write_raw_listing_coord(url: str, coord: dict):
         pass
 
 
-def write_listing(listings: dict):
+def write_listings(listings: dict):
     for listing in listings:
         listing["createdAt"] = datetime.datetime.now()
 
@@ -137,15 +137,27 @@ def marks_urls_as_done(urls: list):
     )
 
 
-def marks_locations_as_done(ids: list):
+def mark_locations_as_done(ids: list):
     c["locations"].update_many(
         {"id": {"$in": ids}},
         {"$set": {"status": "done"}},
     )
 
 
-def marks_raw_listings_as_done(urls: list):
-    c["locations"].update_many(
+def mark_raw_listing_as_missing_fields(url: str):
+    c["listings-raw"].update_one(
+        {"url": url},
+        {"$set": {"status": "missingFields"}},
+    )
+
+def mark_raw_listing_as_failed(url: str):
+    c["listings-raw"].update_one(
+        {"url": url},
+        {"$set": {"status": "failed"}},
+    )
+
+def mark_raw_listings_as_done(urls: list):
+    c["listings-raw"].update_many(
         {"url": {"$in": urls}},
         {"$set": {"status": "done"}},
     )
@@ -220,7 +232,7 @@ def get_pending_urls(n: int = 0, page: int = 0, random: bool = False):
 
 def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
     if random:
-        res = c["listings_raw"].aggregate(
+        res = c["listings-raw"].aggregate(
             [
                 {"$match": {"status": "pending"}},
                 {"$sample": {"size": n}},
@@ -229,10 +241,10 @@ def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
         return list(res)
 
     res = (
-        c["locations_raw"]
+        c["listings-raw"]
         .find({"status": "pending"})
-        .sort("createdAt", -1)
-        .skip(n * page)
+        # .sort("createdAt", -1)
+        # .skip(n * page)
         .limit(n)
     )
     return list(res)

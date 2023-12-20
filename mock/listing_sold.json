@@ -1,0 +1,282 @@
+{
+    "props": {
+      "pageProps": {
+        "saleId": "1291405",
+        "__APOLLO_STATE__": {
+          "BrokerAgency:2150": {
+            "__typename": "BrokerAgency",
+            "id": "2150",
+            "name": "Bjurfors Göteborg City",
+            "developer": false,
+            "phoneNumber": "031- 761 79 00",
+            "brokerAgencyHemnetUrl": "https://www.hemnet.se/maklare/bjurfors-goteborg-city-2150",
+            "brokerCustomization": {
+              "__typename": "BrokerCustomization",
+              "compactLogoUrl": "https://bilder.hemnet.se/images/broker_logo_2/a7/97/a797d617963cb956b85e8a6bb4fb6079.png",
+              "enhancedBrokerCard": false,
+              "logoUrl({\"format\":\"BROKER_CUSTOMIZATION_LARGE\"})": "https://bilder.hemnet.se/images/broker_logo/aa/20/aa2017a5de00e616ab510a145cec8d14.png",
+              "bannerUrl": "https://bilder.hemnet.se/images/broker_banner/f4/32/f4326bf120514d8df3e53b057bbef780.png",
+              "bannerLink": "https://go.bjurfors.se/vardera"
+            },
+            "offersSellingPrices": true,
+            "websiteUrl": "https://www.bjurfors.se/bostadsratter-city?utm_source=hemnet&utm_medium=referral",
+            "isKronofogden": false,
+            "email": "city@bjurfors.se"
+          },
+          "Broker:3378": {
+            "__typename": "Broker",
+            "name": "",
+            "id": "3378",
+            "email": null,
+            "phoneNumber": null,
+            "description": null,
+            "hasActiveProfile": false,
+            "primaryBrokerAgency": {
+              "__ref": "BrokerAgency:2150"
+            },
+            "profileImage": {
+              "__typename": "BrokerProfileImage",
+              "url({\"format\":\"BROKER_PROFILE_LARGE\"})": "https://bilder.hemnet.se/images/broker_profile_large/2d/b3/2db3133447468228afc3e0fdb4b5d720.jpg"
+            },
+            "awards": [],
+            "canonicalUrl": "https://www.hemnet.se/maklare/bjurfors-goteborg-city-2150/maria-willford-3378"
+          },
+          "Location:474335": {
+            "__typename": "Location",
+            "id": "474335",
+            "fullName": "Kviberg",
+            "type": "DISTRICT"
+          },
+          "Location:898744": {
+            "__typename": "Location",
+            "id": "898744",
+            "fullName": "Göteborg - Östra Centrum",
+            "type": "DISTRICT"
+          },
+          "Location:898746": {
+            "__typename": "Location",
+            "id": "898746",
+            "fullName": "Göteborg - Östra",
+            "type": "DISTRICT"
+          },
+          "Location:939969": {
+            "__typename": "Location",
+            "id": "939969",
+            "fullName": "Göteborg",
+            "type": "DISTRICT"
+          },
+          "Location:17920": {
+            "__typename": "Location",
+            "id": "17920",
+            "fullName": "Göteborgs kommun",
+            "type": "MUNICIPALITY"
+          },
+          "Location:17755": {
+            "__typename": "Location",
+            "id": "17755",
+            "fullName": "Västra Götalands län",
+            "type": "COUNTY"
+          },
+          "Location:17691": {
+            "__typename": "Location",
+            "fullName": "Sverige",
+            "type": "COUNTRY",
+            "id": "17691"
+          },
+          "Location:18820": {
+            "__typename": "Location",
+            "fullName": "Göteborg",
+            "type": "POSTAL_CITY",
+            "id": "18820"
+          },
+          "Location:898718": {
+            "__typename": "Location",
+            "fullName": "Göteborg tätort",
+            "type": "CITY",
+            "id": "898718"
+          },
+          "Location:909890": {
+            "__typename": "Location",
+            "fullName": "Soldathemsgatan",
+            "type": "STREET",
+            "id": "909890"
+          },
+          "SoldPropertyListing:1291405": {
+            "__typename": "SoldPropertyListing",
+            "adTargeting": "{\"item_types\":[7],\"rooms\":[5],\"price\":[4],\"municipality\":[58],\"district\":[13,12],\"region\":[19],\"country\":[1],\"water_distance\":[\"101-200\"],\"property_price\":3200000,\"property_address\":\"Soldathemsgatan 17\",\"property_living_area\":80,\"property_zipcode\":\"41528\"}",
+            "area": "Kviberg",
+            "askingPrice": {
+              "__typename": "Money",
+              "formatted": "3 200 000 kr",
+              "amount": 3200000
+            },
+            "attributedImages": {
+              "__typename": "AttributedImages",
+              "floorPlanImages": [],
+              "images": {
+                "__typename": "ListingImageConnection",
+                "nodes": [],
+                "totalCount": 0
+              },
+              "photoAttribution": null,
+              "trackingData": {
+                "__typename": "AttributedImagesTracking",
+                "photoAgencyName": null
+              }
+            },
+            "broker": {
+              "__ref": "Broker:3378"
+            },
+            "brokerAgency": {
+              "__ref": "BrokerAgency:2150"
+            },
+            "districts": [
+              {
+                "__ref": "Location:474335"
+              },
+              {
+                "__ref": "Location:898744"
+              },
+              {
+                "__ref": "Location:898746"
+              },
+              {
+                "__ref": "Location:939969"
+              }
+            ],
+            "fee": {
+              "__typename": "Money",
+              "formatted": "4 838 kr",
+              "amount": 4838
+            },
+            "formattedFloor": "4 av 5, hiss finns",
+            "formattedLandArea": null,
+            "formattedLivingArea": "80 m²",
+            "formattedNumberOfRooms": "3 rum",
+            "formattedPriceChangePercentageWithSign": "±0 %",
+            "formattedSoldAt": "Såld 19 november 2020",
+            "formattedSupplementalArea": null,
+            "housingCooperative": null,
+            "housingForm": {
+              "__typename": "HousingForm",
+              "name": "Lägenhet",
+              "symbol": "APARTMENT",
+              "primaryGroup": "APARTMENTS"
+            },
+            "id": "1291405",
+            "legacyConstructionYear": "2014",
+            "hemnetUrl": "https://www.hemnet.se/salda/lagenhet-3rum-kviberg-goteborgs-kommun-soldathemsgatan-17-1291405",
+            "livingArea": 80,
+            "locationName": "Kviberg, Göteborgs kommun",
+            "municipality": {
+              "__ref": "Location:17920"
+            },
+            "numberOfRooms": 3,
+            "priceChange": {
+              "__typename": "Money",
+              "formatted": "5 000 kr",
+              "amountInCents": "500000"
+            },
+            "relevantAmenities": [
+              {
+                "__typename": "BalconyAmenity",
+                "isRelevant": true,
+                "isAvailable": true,
+                "kind": "BALCONY"
+              },
+              {
+                "__typename": "ElevatorAmenity",
+                "isRelevant": true,
+                "isAvailable": true,
+                "kind": "ELEVATOR"
+              }
+            ],
+            "runningCosts": {
+              "__typename": "Money",
+              "formatted": "1 200 kr",
+              "amount": 1200
+            },
+            "sellingPrice": {
+              "__typename": "Money",
+              "formatted": "3 205 000 kr",
+              "amount": 3205000
+            },
+            "squareMeterSellingPrice": {
+              "__typename": "Money",
+              "formatted": "40 063 kr/m²",
+              "amount": 40063
+            },
+            "soldAt": "1605740400.0",
+            "streetAddress": "Soldathemsgatan 17",
+            "tenure": {
+              "__typename": "Tenure",
+              "name": "Bostadsrätt",
+              "symbol": "TENANT_OWNERSHIP"
+            },
+            "yearlyArrendeFee": null,
+            "yearlyLeaseholdFee": null,
+            "listingId": "17023412",
+            "county": {
+              "__ref": "Location:17755"
+            },
+            "landArea": null,
+            "locations": [
+              {
+                "__ref": "Location:17691"
+              },
+              {
+                "__ref": "Location:17755"
+              },
+              {
+                "__ref": "Location:17920"
+              },
+              {
+                "__ref": "Location:18820"
+              },
+              {
+                "__ref": "Location:474335"
+              },
+              {
+                "__ref": "Location:898718"
+              },
+              {
+                "__ref": "Location:898744"
+              },
+              {
+                "__ref": "Location:898746"
+              },
+              {
+                "__ref": "Location:909890"
+              },
+              {
+                "__ref": "Location:939969"
+              }
+            ]
+          },
+          "ROOT_QUERY": {
+            "__typename": "Query",
+            "sales({\"ids\":[\"1291405\"]})": [
+              {
+                "__ref": "SoldPropertyListing:1291405"
+              }
+            ]
+          }
+        }
+      },
+      "__N_SSP": true
+    },
+    "page": "/sald/[saleSlug]",
+    "query": {
+      "saleSlug": "lagenhet-3rum-kviberg-goteborgs-kommun-soldathemsgatan-17-1291405"
+    },
+    "buildId": "2Un5NHE4mRTVl4CA2ggeh",
+    "isFallback": false,
+    "isExperimentalCompile": false,
+    "gssp": true,
+    "scriptLoader": [],
+    "url": "https://www.hemnet.se/salda/lagenhet-3rum-kviberg-goteborgs-kommun-soldathemsgatan-17-1291405",
+    "createdAt": {
+      "$date": "2023-12-05T15:50:30.540Z"
+    },
+    "status": "pending"
+  }

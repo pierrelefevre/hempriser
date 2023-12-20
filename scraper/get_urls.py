@@ -24,4 +24,4 @@ while True:
                 break
 
             db.write_urls(urls=urls)
-        db.marks_locations_as_done([location["id"]])
+        db.mark_locations_as_done([location["id"]])
