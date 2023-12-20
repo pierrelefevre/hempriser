@@ -2,7 +2,7 @@ import db
 import datetime
 import json
 import re
-
+import clean
 
 example_listing = {}
 
@@ -31,26 +31,15 @@ def get_closest_inflation(date: datetime.datetime):
     return db.get_inflation(id)
 
 
-def clean_listing(listing):
-    apollo = listing["props"]["pageProps"]["__APOLLO_STATE__"]
-
-    # Get location IDs
-    locations = []
-    for k in apollo:
-        if k.startswith("Location"):
-            locations.append(apollo[k]["id"])
-
-    print(locations)
-    cleaned = {"location": locations}
-    pass
-
-
 def main():
-    # read ../mock/listing.json
-    with open("../mock/listing.json", "r") as f:
-        listing = json.load(f)
-    clean_listing(listing)
     db.setup()
+    listings = db.get_pending_raw_listings(n=10)
+
+    for listing in listings:
+        print(listing["props"]["pageProps"].keys())
+
+    exit()
+    clean.clean_listing(listings[0])
 
 
 if __name__ == "__main__":
