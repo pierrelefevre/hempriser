@@ -6,11 +6,16 @@ import { BrowserRouter } from "react-router-dom";
 const theme = createTheme({
   palette: {
     mode: "light",
+    primary: {
+      main: "#018e51",
+    },
+    secondary: {
+      main: "#013a14",
+    },
   },
 });
 
 function App() {
-
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

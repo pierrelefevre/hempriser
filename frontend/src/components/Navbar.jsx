@@ -57,7 +57,7 @@ const Navbar = () => {
           Bostadspriser
         </Typography>
 
-        <Tabs value={currentTab} aria-label="basic tabs example">
+        <Tabs value={currentTab}>
           <Tab
             label="Events"
             icon={<Iconify icon="ph:house-fill" />}
