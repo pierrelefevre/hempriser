@@ -39,7 +39,7 @@ const Navbar = () => {
           component={Link}
           to="/"
         >
-          <img src="bostadspriser.png" style={{ height: "3rem" }} />
+          <img src="bostadspriser-transparent.png" style={{ height: "3rem" }} />
         </IconButton>
 
         <Typography
@@ -59,7 +59,7 @@ const Navbar = () => {
 
         <Tabs value={currentTab}>
           <Tab
-            label="Events"
+            label="Listings"
             icon={<Iconify icon="ph:house-fill" />}
             iconPosition="start"
             component={Link}
