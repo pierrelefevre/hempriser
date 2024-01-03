@@ -7,4 +7,6 @@ COPY ./api /app
 
 EXPOSE 8080
 
+ENV PYTHONBUFFERED=1
+
 CMD ["python", "server.py"]
