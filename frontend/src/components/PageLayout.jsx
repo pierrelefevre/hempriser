@@ -9,7 +9,7 @@ const PageLayout = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Navbar />
       </Box>
-      <Container sx={{ p: 5 }}>
+      <Container sx={{ p: 5, mt: 3 }}>
         <Outlet />
       </Container>
     </>
