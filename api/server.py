@@ -11,13 +11,14 @@ CORS(app)
 print("Loading data")
 
 
-def read_file():
-    with open("listings.json", "r") as f:
-        data = json.load(f)
-    return data
+listings = []
+locations = []
 
+with open("listings.json", "r") as f:
+    listings = json.load(f)
 
-data = read_file()
+with open("locations.json", "r") as f:
+    locations = json.load(f)
 
 
 @app.route("/", methods=["GET"])
@@ -37,9 +38,15 @@ def get_listings():
     skip = int(args.get("skip", 0))
     limit = int(args.get("limit", 10))
 
-    return flask.jsonify(data[skip : skip + limit])
+    return flask.jsonify(listings[skip : skip + limit])
 
 
+@app.route("/locations", methods=["GET"])
+def get_locations():
+    return flask.jsonify(locations)
+
+
+@app.route
 @app.route("/predict", methods=["POST"])
 def predict():
     return 42
