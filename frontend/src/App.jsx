@@ -2,6 +2,7 @@ import { ThemeProvider } from "@emotion/react";
 import { CssBaseline, createTheme } from "@mui/material";
 import Router from "./Router";
 import { BrowserRouter } from "react-router-dom";
+import { ResourceContextProvider } from "./contexts/ResourceContext";
 
 const theme = createTheme({
   palette: {
@@ -21,10 +22,12 @@ const theme = createTheme({
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router />
-      </ThemeProvider>
+      <ResourceContextProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router />
+        </ThemeProvider>
+      </ResourceContextProvider>
     </BrowserRouter>
   );
 }

@@ -13,6 +13,14 @@ export const getListings = async (n, skip) => {
   return data;
 };
 
+export const getLocations = async () => {
+  const response = await fetch(api_url + "/locations");
+  const data = await response.json();
+
+  return data;
+}
+
+
 export const predict = async (listing) => {
   const response = await fetch(api_url + "/predict", {
     method: "POST",

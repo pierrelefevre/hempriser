@@ -4,22 +4,16 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Grid,
   LinearProgress,
   Link,
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { getListings } from "../api/api";
+import useResource from "../hooks/useResource";
 
 const Listings = () => {
-  const [listings, setListings] = useState([]);
-
-  useEffect(() => {
-    getListings().then((data) => {
-      setListings(data);
-    });
-  }, []);
+  const { listings } = useResource();
 
   if (!(listings && listings.length > 0)) {
     return (
@@ -33,28 +27,46 @@ const Listings = () => {
   }
 
   return (
-    <>
+    <Grid container spacing={2}>
       {listings.map((listing, index) => (
-        <Card key={"listing-" + index}>
-          <CardHeader title={listing.housingForm} />
-          <CardContent>
-            <Stack spacing={2}>
-              <Typography variant="body1">{listing.city}</Typography>
-            </Stack>
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              LinkComponent={Link}
-              href={listing.url}
-            >
-              View on Hemnet
-            </Button>
-          </CardActions>
-        </Card>
+        <Grid item xs={12} sm={6} md={6} key={"listing-" + index}>
+          <Card>
+            <CardHeader
+              title={
+                listing.rooms +
+                " room " +
+                listing.housingForm +
+                ", " +
+                listing.constructionYear
+              }
+            />
+            <CardContent>
+              <Stack spacing={2}>
+                <Typography variant="body1">
+                  {listing.district +
+                    ", " +
+                    listing.municipality +
+                    ", " +
+                    listing.county +
+                    ", " +
+                    listing.city}
+                </Typography>
+              </Stack>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color="primary"
+                LinkComponent={Link}
+                href={listing.url}
+              >
+                View on Hemnet
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
       ))}
-    </>
+    </Grid>
   );
 };
 
