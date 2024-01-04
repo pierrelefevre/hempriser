@@ -1,5 +1,5 @@
-// const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
-const api_url = "http://localhost:8080";
+const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
+// const api_url = "http://localhost:8080";
 
 export const getListings = async (n, skip) => {
   if (n === undefined) {
