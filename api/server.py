@@ -21,7 +21,7 @@ listings = []
 locations = []
 
 # Temporary solution until we have some better way of selecting the model we want to use
-model = pickle.load(open("../models/main.pkl", "rb"))
+model = pickle.load(open("models/main.pkl", "rb"))
 
 
 with open("listings.json", "r") as f:
