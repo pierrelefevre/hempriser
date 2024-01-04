@@ -3,10 +3,11 @@ import datetime
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
 
-# collection dict
+# Collection dict
 c = {}
+
+load_dotenv()
 
 
 def setup():
@@ -188,7 +189,14 @@ def update_status(hostname: str, timestamp: datetime.datetime, status: str):
 
 
 # Read
-
+def get_listings(n: int = 0, page: int = 0):
+    res = (
+        c["listings"]
+        .find({})
+        .skip(n * page)
+        .limit(n)
+    )
+    return list(res)
 
 def get_pending_locations(n: int = 0, page: int = 0, random: bool = False):
     if random:

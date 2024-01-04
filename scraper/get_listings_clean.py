@@ -1,6 +1,21 @@
 import db
 import time
-import locale
+import datetime
+
+swedish_to_english_months = {
+    "januari": "January",
+    "februari": "February",
+    "mars": "March",
+    "april": "April",
+    "maj": "May",
+    "juni": "June",
+    "juli": "July",
+    "augusti": "August",
+    "september": "September",
+    "oktober": "October",
+    "november": "November",
+    "december": "December"
+}
 
 
 def clean_listing(listing_raw):
@@ -45,7 +60,6 @@ def clean_listing(listing_raw):
                     output["askingPrice"] = value["askingPrice"]["amount"]
                 else:
                     output["askingPrice"] = output["finalPrice"]
-                    
 
                 if "fee" in value.keys() and value["fee"] is not None:
                     output["fee"] = value["fee"]["amount"]
@@ -59,11 +73,24 @@ def clean_listing(listing_raw):
                 else:
                     output["rooms"] = 1
 
+                # format formattedSoldAt to datetime
+                if "formattedSoldAt" in value.keys() and value["formattedSoldAt"] is not None:
+                    # Såld 09 juli 2021
+                    splits = value["formattedSoldAt"].split(" ")
+
+                    # 9 July 2021
+                    eng_date_str = f"{splits[1]} {swedish_to_english_months[splits[2]]} {splits[3]}"
+
+                    output["soldAt"] = datetime.datetime.strptime(
+                        eng_date_str, "%d %B %Y")
+                else:
+                    raise Exception("Missing formattedSoldAt")
+
                 # format legacyConstructionYear to int from str
-                    
+
                 # not renovated: 1953
                 # renovated: 1953/2010
-                    
+
                 if "legacyConstructionYear" in value.keys() and value["legacyConstructionYear"] is not None:
                     try:
                         split = value["legacyConstructionYear"].split("/")
@@ -73,10 +100,12 @@ def clean_listing(listing_raw):
                         else:
                             output["constructionYear"] = int(split[0])
                             output["renovationYear"] = int(split[1])
+
+                            # Sometimes it fails to parse to an int
+                            if output["renovationYear"] == 0:
+                                output["renovationYear"] = output["constructionYear"]
                     except Exception:
                         pass
-
-                
 
                 if "runningCosts" in value.keys() and value["runningCosts"] is not None:
                     output["runningCosts"] = value["runningCosts"]["amount"]
@@ -86,75 +115,55 @@ def clean_listing(listing_raw):
                 output["housingForm"] = value["housingForm"]["name"]
 
                 if "housingCooperative" in value.keys() and value["housingCooperative"] is not None:
-
                     # check if housingCooperative is a string or a dict
                     if isinstance(value["housingCooperative"], str):
                         output["housingCooperative"] = value["housingCooperative"]
                     else:
                         output["housingCooperative"] = value["housingCooperative"]["name"]
-                else:
-                    output["housingCooperative"] = None
+
+                    # remove housing cooperative if it is an empty string
+                    if output["housingCooperative"] == "":
+                        del output["housingCooperative"]
+
 
                 # find all amenities
                 output["hasElevator"] = False
                 output["hasBalcony"] = False
                 for amenity in value["relevantAmenities"]:
-                    if amenity["kind"] == "ELEVATOR":
+                    if amenity["kind"] == "ELEVATOR" and amenity["isAvailable"]:
                         output["hasElevator"] = amenity["isAvailable"]
+                    else:
+                        output["hasElevator"] = False
 
-                    if amenity["kind"] == "BALCONY":
+                    if amenity["kind"] == "BALCONY" and amenity["isAvailable"]:
                         output["hasBalcony"] = amenity["isAvailable"]
-
-                # find all images
-                # sample:
-                #
-                # "images({\"limit\":300})": {
-                #             "__typename": "ListingImageResults",
-                #             "images": [
-                #                 {
-                #                     "__typename": "ListingImage",
-                #                     "url({\"format\":\"ITEMGALLERY_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_cut/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
-                #                     "url({\"format\":\"ITEMGALLERY_PORTRAIT_CUT\"})": "https://bilder.hemnet.se/images/itemgallery_portrait_cut/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
-                #                     "url({\"format\":\"WIDTH1024\"})": "https://bilder.hemnet.se/images/1024x/a7/8f/a78fc0fa6e971d3e3df18760ea808fa1.jpg",
-                #                     "originalWidth": 2048,
-                #                     "originalHeight": 1365,
-                #                     "labels": [
-                #                     ]
-                #                 },
-
-                # for key2, value2 in value.items():
-                #     if key2.startswith("images") and "images" in value2.keys():
-                #         for image in value2["images"]:
-                #             for imageKey in image.keys():
-                #                 if "url" in imageKey and "WIDTH" in imageKey:
-                #                     output["images"].append(image[imageKey])
-                #                     break
 
         except Exception as e:
             print("Failed to clean listing, details: " + str(e))
             continue
-    
-        
+
     # if missing district, set it to the municipality
     if "district" not in output:
         output["district"] = output["municipality"]
 
-
+    # Add coord, does not exist for all listings
+    if "coord" in listing_raw.keys():
+        output["lat"] = listing_raw["coord"]["lat"]
+        output["long"] = listing_raw["coord"]["long"]
 
     # Make sure we have all the required fields
-
     required_fields = [
         "id",
         "url",
         "finalPrice",
         "askingPrice",
+        "soldAt",
         "fee",
         "livingArea",
         "rooms",
         "constructionYear",
         "runningCosts",
         "housingForm",
-        "housingCooperative",
         "hasElevator",
         "hasBalcony",
         "district",
@@ -163,11 +172,16 @@ def clean_listing(listing_raw):
         "city",
     ]
 
+    missing_fields = []
     for field in required_fields:
-        if field not in output:
-            raise Exception(f"Missing required field: {field}")    
-    
-    
+        if field not in output or output[field] is None:
+            missing_fields.append(field)
+
+    if len(missing_fields) > 0:
+        if missing_fields != ["constructionYear"]:
+            print("Missing required fields: " + str(missing_fields))
+        raise Exception(f"Missing required field: {missing_fields}")
+
     return output
 
 
@@ -193,13 +207,15 @@ def clean_all():
                     db.mark_raw_listing_as_missing_fields(raw_listing["url"])
                     continue
 
-                print("Failed to clean listing ("+str(raw_listing["url"])+"), details: " + str(e))
+                print("Failed to clean listing (" +
+                      str(raw_listing["url"])+"), details: " + str(e))
                 db.mark_raw_listing_as_failed(raw_listing["url"])
                 continue
         db.write_listings(cleaned)
         db.mark_raw_listings_as_done([listing["url"] for listing in cleaned])
 
-        print(f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields.")
+        print(
+            f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields.")
 
 
 def clean_mock():

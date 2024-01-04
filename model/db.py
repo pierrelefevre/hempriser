@@ -1,14 +1,16 @@
-import os
 import pymongo as mongo
+import datetime
 from dotenv import load_dotenv
+import os
 
+
+# Collection dict
 c = {}
+
+load_dotenv()
 
 
 def setup():
-    load_dotenv()
-    print("Setting up database connection...")
-
     required_env_vars = [
         "MONGO_USER",
         "MONGO_SECRET",
@@ -31,36 +33,35 @@ def setup():
         f"mongodb://{db_user}:{db_pass}@{os.getenv('MONGO_HOST')}"
     )
 
+    client.server_info()
+
     db = client["bostadspriser"]
 
     global c
-    c["listings-raw"] = db["listings-raw"]
     c["listings"] = db["listings"]
-    c["urls"] = db["urls"]
-    c["locations"] = db["locations"]
-    c["search-terms"] = db["search-terms"]
     c["inflation"] = db["inflation"]
 
 
-def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
-    if random:
-        res = c["listings_raw"].aggregate(
-            [
-                {"$match": {"status": "pending"}},
-                {"$sample": {"size": n}},
-            ]
-        )
-        return list(res)
+setup()
 
+# Read
+    
+def get_listings(n: int = 0, page: int = 0):
     res = (
-        c["listings-raw"]
-        .find({"status": "pending"})
-        .sort("createdAt", -1)
+        c["listings"]
+        .find({})
         .skip(n * page)
         .limit(n)
     )
     return list(res)
 
+def get_inflation(year: int, month: int):
+    if month < 10:
+        key = f"{year}M0{month}"
+    else:
+        key = f"{year}M{month}"
 
-def get_inflation(key: str):
-    c["inflation"].find_one({"key": key})
+    res = c["inflation"].find_one({"id": key})
+    return res
+
+
