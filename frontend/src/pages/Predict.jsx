@@ -12,7 +12,8 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { predict } from "../api/api";
 
 import locations from "../api/locations.json";
 
@@ -38,6 +39,45 @@ const Predict = () => {
     hasElevator: false,
     hasBalcony: false,
   });
+  const [predictedPrice, setPredictedPrice] = useState("");
+
+  useEffect(() => {
+    console.log(state.district);
+    if (!Object.values(state).some((value) => value === "")) {
+      // Convert state to correct format for the API
+      const listing = {}
+      listing.district = parseInt(state.district.split(", ")[1])
+      listing.municipality = parseInt(state.municipality.split(", ")[1]);
+      listing.county = parseInt(state.county.split(", ")[1]);
+      listing.city = parseInt(state.city.split(", ")[1]);
+      listing.fee = parseInt(state.fee);
+      listing.livingArea = parseInt(state.livingArea);
+      listing.rooms = parseInt(state.rooms);
+      listing.constructionYear = parseInt(state.constructionYear);
+      listing.renovationYear = parseInt(state.renovationYear);
+      listing.runningCosts = parseInt(state.runningCosts);
+      listing.housingForm = state.housingForm;
+      listing.hasHousingCooperative = state.housingCooperative;
+      listing.hasElevator = state.hasElevator;
+      listing.hasBalcony = state.hasBalcony;
+      listing.soldAt = new Date().toISOString().slice(0, 10);
+
+      // TODO: add coords in form, maybe pick from map? Or fetch from Hemnet API
+      listing.lat = 50;
+      listing.long = 50;
+      
+      // Currently don't use asking price, maybe we will do it in the future
+      // listing.askingPrice = parseInt(state.askingPrice);
+
+      predict(listing)
+        .then((data) => {
+          setPredictedPrice(data.prediction)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [state]);
 
   const housingForms = [
     "Tomt",
@@ -255,15 +295,25 @@ const Predict = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <FormControlLabel
-              control={<Switch />}
+              control={<Switch onChange={(e) => setState({ ...state, housingCooperative: e.target.checked })} />}
               label="Housing cooperative"
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
-            <FormControlLabel control={<Switch />} label="Has elevator" />
+            <FormControlLabel control={<Switch onChange={(e) => setState({ ...state, hasElevator: e.target.checked })} />} label="Has elevator" />
           </Grid>
           <Grid item xs={12} sm={6} md={6}>
-            <FormControlLabel control={<Switch />} label="Has balcony" />
+            <FormControlLabel control={<Switch onChange={(e) => setState({ ...state, hasBalcony: e.target.checked })} />} label="Has balcony" />
+          </Grid>
+
+          {/* submit box */}
+          <Grid item xs={12} sm={6} md={6}>
+            <TextField
+              label="Predicted price"
+              variant="outlined"
+              value={predictedPrice}
+              disabled
+            />
           </Grid>
         </Grid>
       </CardContent>
