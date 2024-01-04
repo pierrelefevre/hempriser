@@ -3,6 +3,8 @@ name: kthcloud-ci
   push:
     branches:
       - main
+    paths:
+      - 'frontend/**'
 jobs:
   docker:
     runs-on: ubuntu-latest

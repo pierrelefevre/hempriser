@@ -3,6 +3,10 @@ name: kthcloud-ci
   push:
     branches:
       - main
+    paths:
+      - 'api/**'
+      - 'models/**'
+
 jobs:
   docker:
     runs-on: ubuntu-latest
