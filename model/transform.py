@@ -1,9 +1,58 @@
 import datetime
 import db
 
+# Below are the steps to transform a listing from the raw format to the format used in the model
+# This is useful when the same transformation needs to be done on the API side as on the model side
+# 1. Remove unwanted fields
+# 2. Add the closest inflation data
+# 3. Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
+# 4. Convert "housingForm" to a one-hot encoding
+# 5. Convert "constructionYear" to "age"
+# 6. Convert "renovationYear" to "sinceLastRenovation"
+# 7. Convert "soldAt" to "soldYear" and "soldMonth"
+
+
+allowed_types = [
+    "Tomt",
+    "Vinterbonat fritidshus",
+    "Lägenhet",
+    "Gård med skogsbruk",
+    "Villa",
+    "Kedjehus",
+    "Parhus",
+    "Par-/kedje-/radhus",
+    "Radhus",
+    "Gård utan jordbruk",
+    "Fritidshus",
+    "Gård/skog",
+    "Övrig",
+    "Fritidsboende",
+    "Gård med jordbruk",
+]
 
 def get_closest_cpi(date: datetime.datetime):
     return db.get_inflation(date.year, date.month)
+
+def convert_housing_form_to_one_hot_encoding(housing_form):
+    one_hot_encoded_housing_form = {
+        "isPlot": housing_form == "Tomt",
+        "isWinterLeisureHouse": housing_form == "Vinterbonat fritidshus",
+        "isApartment": housing_form == "Lägenhet",
+        "isFarmWithForest": housing_form == "Gård med skogsbruk",
+        "isHouse": housing_form == "Villa",
+        "isRowHouse": housing_form == "Kedjehus",
+        "isPairHouse": housing_form == "Parhus",
+        "isPairTerracedRowHouse": housing_form == "Par-/kedje-/radhus",
+        "isTerracedHouse": housing_form == "Radhus",
+        "isFarmWithoutForest": housing_form == "Gård utan jordbruk",
+        "isLeisureHouse": housing_form == "Fritidshus" or housing_form == "Fritidsboende",
+        "isFarmWithForest": housing_form == "Gård/skog",
+        "isOtherHousingForm": housing_form == "Övrig",
+        "isFarmWithAgriculture": housing_form == "Gård med jordbruk",
+    }
+
+    return one_hot_encoded_housing_form
+
 
 def transform_listing(listing):
     # Remove unwanted fields
@@ -20,7 +69,7 @@ def transform_listing(listing):
     inflation = get_closest_cpi(listing['soldAt'])
     if inflation is None:
         return None
-    
+
     listing['cpi'] = inflation['cpiDecided']
 
     # Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
@@ -32,20 +81,9 @@ def transform_listing(listing):
         del listing['housingCooperative']
 
     # Convert "housingForm" to a one-hot encoding
-    # Query in MongoDB to find all unique values:
-    #     {housingForm: {$nin: ["Gård med skogsbruk","Tomt","Gård med jordbruk","Kedjehus","Gård/skog","Gård utan jordbruk", "Lägenhet", "Par-/kedje-/radhus", "Övrig", "Parhus", "Fritidshus", "Vinterbonat fritidshus", "Fritidsboende", "Radhus", "Villa"]}}
-    housing_form = listing['housingForm']
-    listing['isApartment'] = housing_form == 'Lägenhet'
-    listing['isHouse'] = housing_form == 'Villa'
-    listing['isRowHouse'] = housing_form == 'Radhus' or 'radhus' in housing_form.lower()
-    listing['isTerracedHouse'] = housing_form == 'Kedjehus'
-    listing['isPairHouse'] = housing_form == 'Parhus'
-    listing['isTenantOwner'] = housing_form == 'Bostadsrätt'
-    listing['isLeisureHouse'] = housing_form == 'Fritidshus' or 'fritidshus' in housing_form.lower()
-    listing['isFarm'] = housing_form == 'Gård' or 'gård' in housing_form.lower()
-    listing['isForest'] = housing_form == 'Skog'
-    listing['isPlot'] = housing_form == 'Tomt'
-    listing['isOtherHousingForm'] = housing_form == 'Övrig' or 'övrig' in housing_form.lower()
+    for name, one_hot_encoding in convert_housing_form_to_one_hot_encoding(listing['housingForm']).items():
+        listing[name] = one_hot_encoding
+    del listing['housingForm']
 
     # Convert "constructionYear" to "age"
     year_now = datetime.datetime.now().year
@@ -64,9 +102,8 @@ def transform_listing(listing):
     listing['soldMonth'] = listing['soldAt'].month
     del listing['soldAt']
 
-    del listing['housingForm']
-
     return listing
+
 
 if __name__ == "__main__":
     mock = {

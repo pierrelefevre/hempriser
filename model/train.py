@@ -22,14 +22,20 @@ def train():
     file_path = '../dataset/listings.parquet'
     data = pd.read_parquet(file_path)
 
-    # drop "askingPrice"
+    # drop "askingPrice" for testing
     data = data.drop('askingPrice', axis=1)
 
     # print how many rows and columns
     print("Rows: " + str(data.shape[0]) + ", Columns: " + str(data.shape[1]))
+    # print column names sorted alphabetically
+    print("Columns: " + str(sorted(data.columns)))
+    exit()
 
     print("Preprocessing...")
     data = data.dropna()
+
+    # Sort column names alphabetically
+    data = data.reindex(sorted(data.columns), axis=1)
 
     print("Selecting target variable and features...")
     y = data['finalPrice']
@@ -80,21 +86,21 @@ def train():
     def evaluate_model(model, params, X_train, y_train, X_test, y_test):
         print_same_line("Evaluating " + name + "... Finding params... ")
 
-        grid_search = GridSearchCV(estimator=model, param_grid=params,
+        gs_model = GridSearchCV(estimator=model, param_grid=params,
                                    scoring='neg_mean_squared_error', cv=5, n_jobs=-1)
         print_same_line("Fitting... ")
-        grid_search.fit(X_train, y_train)
-        print_same_line("(" + str(grid_search.best_params_) + ") ")
+        gs_model.fit(X_train, y_train)
+        print_same_line("(" + str(gs_model.best_params_) + ") ")
 
         print_same_line("Predicting... ")
-        y_pred = grid_search.predict(X_test)
+        y_pred = gs_model.predict(X_test)
         mse = mean_squared_error(y_test, y_pred)
         rmse = np.sqrt(mse)
         r2 = r2_score(y_test, y_pred)
 
         print(" MSE: " + str(mse) + ", RMSE: " +
               str(rmse) + ", R^2: " + str(r2))
-        return model, mse, rmse, r2
+        return gs_model, mse, rmse, r2
 
     print("Evaluating models...")
     results = {}
@@ -115,6 +121,8 @@ def train():
     best_model = results_df.index[0]
     with open('../models/main.pkl', 'wb') as f:
         pickle.dump(results[best_model]['model'], f)
+
+    results_df.to_csv('../models/main_results.csv')
 
 
 if __name__ == '__main__':
