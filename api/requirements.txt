@@ -1,2 +1,5 @@
 flask
 Flask-Cors
+cerberus
+dotenv
+pymongo

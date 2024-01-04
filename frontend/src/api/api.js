@@ -1,4 +1,5 @@
-const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
+// const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
+const api_url = "http://localhost:8080";
 
 export const getListings = async (n, skip) => {
   if (n === undefined) {
@@ -30,5 +31,9 @@ export const predict = async (listing) => {
     body: JSON.stringify(listing),
   });
 
-  return response.text;
+  if (response.status !== 200) {
+    return response.json();
+  }
+
+  return response.json();
 };
