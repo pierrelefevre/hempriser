@@ -1,5 +1,5 @@
 flask
 Flask-Cors
 cerberus
-dotenv
+python_dotenv
 pymongo
