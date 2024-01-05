@@ -1,1 +1,42 @@
-{"name": "bostadspriser-without-askingPrice", "nameWithDate": "bostadspriser-without-askingPrice-2024-01-05", "features": ["fee", "livingArea", "rooms", "runningCosts", "hasElevator", "hasBalcony", "lat", "long", "cpi", "hasHousingCooperative", "isPlot", "isWinterLeisureHouse", "isApartment", "isFarmWithForest", "isHouse", "isRowHouse", "isPairHouse", "isPairTerracedRowHouse", "isTerracedHouse", "isFarmWithoutForest", "isLeisureHouse", "isOtherHousingForm", "isFarmWithAgriculture", "age", "sinceLastRenovation", "soldYear", "soldMonth"], "target": "finalPrice", "trainedAt": "2024-01-05T15:10:01.278979", "model": {"name": "Linear Regression", "params": {}, "mse": 3155263694507.91, "rmse": 1776306.1939057438, "r2": 0.3156938828418222}}
+{
+  "name": "bostadspriser-without-askingPrice",
+  "nameWithDate": "bostadspriser-without-askingPrice-2024-01-05",
+  "features": [
+    "fee",
+    "livingArea",
+    "rooms",
+    "runningCosts",
+    "hasElevator",
+    "hasBalcony",
+    "lat",
+    "long",
+    "cpi",
+    "hasHousingCooperative",
+    "isPlot",
+    "isWinterLeisureHouse",
+    "isApartment",
+    "isFarmWithForest",
+    "isHouse",
+    "isRowHouse",
+    "isPairHouse",
+    "isPairTerracedRowHouse",
+    "isTerracedHouse",
+    "isFarmWithoutForest",
+    "isLeisureHouse",
+    "isOtherHousingForm",
+    "isFarmWithAgriculture",
+    "age",
+    "sinceLastRenovation",
+    "soldYear",
+    "soldMonth"
+  ],
+  "target": "finalPrice",
+  "trainedAt": "2024-01-05T16:43:44.956479",
+  "model": {
+    "name": "Gradient Boosting",
+    "params": { "max_depth": 10, "min_samples_split": 2, "n_estimators": 100 },
+    "mse": 535497625575.1073,
+    "rmse": 731777.0326917259,
+    "r2": 0.8907193632490445
+  }
+}
