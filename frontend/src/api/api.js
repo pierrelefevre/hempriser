@@ -1,14 +1,16 @@
 const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
 // const api_url = "http://localhost:8080";
 
-export const getListings = async (n, skip) => {
-  if (n === undefined) {
-    n = 10;
+export const getListings = async (page, pageSize) => {
+  if (page === undefined) {
+    page = 10;
   }
-  if (skip === undefined) {
-    skip = 0;
+  if (pageSize === undefined) {
+    pageSize = 0;
   }
-  const response = await fetch(api_url + "/listings?n=" + n + "&skip=" + skip);
+  const response = await fetch(
+    api_url + "/listings?page=" + page + "&pageSize=" + pageSize
+  );
   const data = await response.json();
 
   return data;
@@ -19,7 +21,7 @@ export const getModels = async () => {
   const data = await response.json();
 
   return data;
-}
+};
 
 export const predict = async (listing) => {
   const response = await fetch(api_url + "/predict", {

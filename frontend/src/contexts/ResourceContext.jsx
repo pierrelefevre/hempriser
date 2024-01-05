@@ -12,15 +12,25 @@ export const ResourceContext = createContext({
 export const ResourceContextProvider = ({ children }) => {
   const [listings, setListings] = useState([]);
   const [models, setModels] = useState([]);
+  const [page, setPage] = useState(0);
+  const n = 50;
 
   const fetchListings = async () => {
-    let data = await getListings();
-    setListings(data);
+    let data = await getListings(page, n);
+    if (data.length === 0) {
+      return;
+    }
+    setListings([...listings, ...data]);
   };
 
   const fetchModels = async () => {
     let data = await getModels();
     setModels(data);
+  };
+
+  const nextPage = () => {
+    setPage(page + 1);
+    fetchListings();
   };
 
   useEffect(() => {
@@ -34,6 +44,7 @@ export const ResourceContextProvider = ({ children }) => {
       value={{
         listings,
         models,
+        nextPage,
       }}
     >
       {children}
