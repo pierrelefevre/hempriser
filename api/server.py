@@ -16,10 +16,8 @@ print("Bostadspriser API")
 app = flask.Flask(__name__)
 CORS(app)
 
-print("Loading data")
-
-listings = []
-locations = []
+print("Loading models")
+helpers.load_models()
 
 
 with open("listings.json", "r") as f:
@@ -62,11 +60,6 @@ def get_listings():
     limit = int(args.get("pageSize", 10))
 
     return helpers.get_live_listings(skip, limit)
-
-
-@app.route("/locations", methods=["GET"])
-def get_locations():
-    return flask.jsonify(locations)
 
 
 @app.route("/predict", methods=["POST"])
@@ -123,7 +116,9 @@ def predict():
     print("before sort")
     print(transformed_params_df.columns)
 
-    transformed_params_df = transformed_params_df.reindex(sorted(transformed_params_df.columns), axis=1)
+    transformed_params_df = transformed_params_df.reindex(
+        sorted(transformed_params_df.columns), axis=1
+    )
 
     print("after sort")
     print(transformed_params_df.columns)
