@@ -151,18 +151,19 @@ const Listings = () => {
                     />
                   )}
                 </Stack>
-                 {listing.lat && listing.long && (
-                <Box sx={{ height: 194, width: "100%", mt: 3 }}>
-                  <MapContainer
-                    center={[listing.lat, listing.long]}
-                    zoom={13}
-                    scrollWheelZoom={false}
-                    style={{ height: "100%", width: "100 %" }}
-                  >
-                    <TileLayer url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png	" />
-                    <Marker position={[listing.lat, listing.long]} />
-                  </MapContainer>
-                </Box>)}
+                {listing.lat && listing.long && (
+                  <Box sx={{ height: 194, width: "100%", mt: 3 }}>
+                    <MapContainer
+                      center={[listing.lat, listing.long]}
+                      zoom={13}
+                      scrollWheelZoom={false}
+                      style={{ height: "100%", width: "100 %" }}
+                    >
+                      <TileLayer url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png	" />
+                      <Marker position={[listing.lat, listing.long]} />
+                    </MapContainer>
+                  </Box>
+                )}
               </CardContent>
 
               <CardActions>
