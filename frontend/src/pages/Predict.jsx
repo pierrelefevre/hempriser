@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -12,19 +13,14 @@ import {
   Stack,
   Switch,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { predict } from "../api/api";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
+import prettyNum from "pretty-num";
 
 const Predict = () => {
   const [state, setState] = useState({
@@ -42,7 +38,37 @@ const Predict = () => {
     hasElevator: false,
     hasBalcony: false,
   });
-  const [predictedPrice, setPredictedPrice] = useState("");
+  const [prediction, setPrediction] = useState(null);
+  const [askingPrice, setAskingPrice] = useState(false);
+
+  const generateRandomState = () => {
+    let randomState = {
+      latitude: "59.3361328",
+      longitude: "18.0726201",
+      fee: Math.floor(Math.random() * 6000).toString(),
+      livingArea: Math.floor(50 + Math.random() * 20).toString(),
+      rooms: Math.floor(2 + Math.random() * 3).toString(),
+      constructionYear: Math.floor(1900 + Math.random() * 124).toString(),
+      renovationYear: Math.floor(2010 + Math.random() * 10).toString(),
+      runningCosts: Math.floor(Math.random() * 5000).toString(),
+      housingForm: "Lägenhet",
+      housingCooperative: Math.random() >= 0.5,
+      hasElevator: Math.random() >= 0.5,
+      hasBalcony: Math.random() >= 0.5,
+    };
+
+    let showAskingPrice = Math.random() >= 0.7;
+    if (showAskingPrice) {
+      (randomState.askingPrice = Math.floor(
+        Math.random() * 10000000
+      ).toString()),
+        setAskingPrice(true);
+    } else {
+      randomState.askingPrice = "";
+      setAskingPrice(false);
+    }
+    setState(randomState);
+  };
 
   const MapEventComponent = () => {
     const map = useMapEvents({
@@ -59,33 +85,42 @@ const Predict = () => {
   };
 
   useEffect(() => {
-    if (!Object.values(state).some((value) => value === "")) {
-      // Convert state to correct format for the API
-      const listing = {};
-      listing.lat = parseFloat(state.latitude);
-      listing.long = parseFloat(state.longitude);
-      listing.askingPrice = parseInt(state.askingPrice);
-      listing.fee = parseInt(state.fee);
-      listing.livingArea = parseInt(state.livingArea);
-      listing.rooms = parseInt(state.rooms);
-      listing.constructionYear = parseInt(state.constructionYear);
-      listing.renovationYear = parseInt(state.renovationYear);
-      listing.runningCosts = parseInt(state.runningCosts);
-      listing.housingForm = state.housingForm;
-      listing.hasHousingCooperative = state.housingCooperative;
-      listing.hasElevator = state.hasElevator;
-      listing.hasBalcony = state.hasBalcony;
-      listing.soldAt = new Date().toISOString().slice(0, 10);
+    // Convert state to correct format for the API
+    const listing = {};
+    listing.lat = parseFloat(state.latitude);
+    listing.long = parseFloat(state.longitude);
+    listing.fee = parseInt(state.fee);
+    listing.livingArea = parseInt(state.livingArea);
+    listing.rooms = parseInt(state.rooms);
+    listing.constructionYear = parseInt(state.constructionYear);
+    listing.renovationYear = parseInt(state.renovationYear);
+    listing.runningCosts = parseInt(state.runningCosts);
+    listing.housingForm = state.housingForm;
+    listing.hasHousingCooperative = state.housingCooperative;
+    listing.hasElevator = state.hasElevator;
+    listing.hasBalcony = state.hasBalcony;
+    listing.soldAt = new Date().toISOString().slice(0, 10);
 
-      predict(listing)
-        .then((data) => {
-          setPredictedPrice(data.prediction);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    if (askingPrice) {
+      listing.askingPrice = parseInt(state.askingPrice);
     }
-  }, [state]);
+
+    predict(listing)
+      .then((data) => {
+        setPrediction(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, askingPrice]);
+
+  useEffect(() => {
+    generateRandomState();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const housingForms = [
     "Tomt",
@@ -155,21 +190,6 @@ const Predict = () => {
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={6}>
-              <TextField
-                label="Asking price"
-                variant="outlined"
-                onChange={(e) =>
-                  setState({
-                    ...state,
-                    askingPrice: parseInt(e.target.value).toString(),
-                  })
-                }
-                value={state.askingPrice}
-                type="number"
-              />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
               <TextField
@@ -279,6 +299,7 @@ const Predict = () => {
               <FormControlLabel
                 control={
                   <Switch
+                    checked={state.housingCooperative}
                     onChange={(e) =>
                       setState({
                         ...state,
@@ -294,6 +315,7 @@ const Predict = () => {
               <FormControlLabel
                 control={
                   <Switch
+                    checked={state.hasElevator}
                     onChange={(e) =>
                       setState({ ...state, hasElevator: e.target.checked })
                     }
@@ -306,6 +328,7 @@ const Predict = () => {
               <FormControlLabel
                 control={
                   <Switch
+                    checked={state.hasBalcony}
                     onChange={(e) =>
                       setState({ ...state, hasBalcony: e.target.checked })
                     }
@@ -313,6 +336,45 @@ const Predict = () => {
                 }
                 label="Has balcony"
               />
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={12}>
+              <Box sx={{ height: 50 }} />
+            </Grid>
+
+            <Grid item xs={12} sm={4} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch checked={askingPrice} onChange={(e) => setAskingPrice(e.target.checked)} />
+                }
+                label="Have an asking price already?"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4} md={4}>
+              <TextField
+                label="Asking price"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    askingPrice: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.askingPrice}
+                type="number"
+                disabled={!askingPrice}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4} md={4}>
+              <Button
+                variant="contained"
+                onClick={() => generateRandomState()}
+                sx={{ width: "100%" }}
+              >
+                Randomize
+              </Button>
             </Grid>
           </Grid>
         </CardContent>
@@ -329,17 +391,27 @@ const Predict = () => {
       >
         <CardHeader title="Predicted price" />
         <CardContent>
-          <Grid container spacing={2}>
-            {/* submit box */}
-            <Grid item xs={12} sm={6} md={6}>
-              <TextField
-                label="Predicted price"
-                variant="standard"
-                value={predictedPrice}
-                disabled
-              />
+          {!prediction ? (
+            <Typography variant="body2">
+              Fill in all fields to show price. Predictions with Asking Price is
+              optional, and uses a different model
+            </Typography>
+          ) : (
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={6}>
+                <Typography variant="h3">
+                  {prettyNum(Math.floor(prediction.prediction), {
+                    thousandsSeparator: " ",
+                  }) + " SEK"}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6} md={6}>
+                <Typography variant="caption">Model used</Typography>
+                <br />
+                <Typography variant="h6">{prediction.model}</Typography>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </CardContent>
       </Card>
     </Stack>
