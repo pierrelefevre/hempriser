@@ -42,6 +42,40 @@ const About = () => {
                     {"Target: " + model.metadata.target}
                   </Typography>
                   <Divider sx={{ my: 2 }} />
+                  <Typography gutterBottom>Results</Typography>
+                  {Object.keys(model.results).map(
+                    (modelType, modelTypeIndex) => (
+                      <Stack
+                        spacing={2}
+                        direction={"row"}
+                        flexWrap={"wrap"}
+                        useFlexGap
+                        alignItems={"center"}
+                        justifyContent={"flex-start"}
+                        key={modelTypeIndex}
+                      >
+                        <Chip
+                          label={modelType}
+                          key={"modelType-" + modelTypeIndex}
+                          color="primary"
+                        />
+                        {Object.keys(model.results[modelType]).map(
+                          (resultType, resultTypeIndex) => (
+                            <Chip
+                              label={
+                                resultType +
+                                ": " +
+                                model.results[modelType][resultType]
+                              }
+                              key={"feature-" + resultTypeIndex}
+                            />
+                          )
+                        )}
+                      </Stack>
+                    )
+                  )}
+
+                  <Divider sx={{ my: 2 }} />
                   <Typography gutterBottom>Features</Typography>
                   <Stack
                     spacing={2}
