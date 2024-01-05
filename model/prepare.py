@@ -8,11 +8,11 @@ def main():
     print("Loading data from database...")
 
     print("Preparing the data...")
-    transformed = []
     page = 0
     pageSize = 10000
 
     while True:
+        transformed = []
         listings = db.get_listings(pageSize, page)
         if len(listings) == 0:
             print("No more listings to load")

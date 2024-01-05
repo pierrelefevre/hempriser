@@ -17,31 +17,31 @@ from sklearn.svm import SVR
 # List of regressors to try
 regressors = {
     "Linear Regression": {"model": LinearRegression(), "params": {}},
-    # "Ridge Regression": {
-    #     "model": Ridge(),
-    #     "params": {
-    #         "alpha": [0.1, 1, 10, 100],
-    #     },
-    # },
-    # "Lasso Regression": {
-    #     "model": Lasso(),
-    #     "params": {
-    #         "alpha": [0.1, 1, 10, 100],
-    #     },
-    # },
-    # "Random Forest": {
-    #     "model": RandomForestRegressor(),
-    #     # Random Forest was too slow to run with GridSearchCV, so it will use the default parameters
-    #     "params": {},
-    # },
-    # "Gradient Boosting": {
-    #     "model": GradientBoostingRegressor(),
-    #     "params": {
-    #         "n_estimators": [10, 100],
-    #         "max_depth": [3, 10],
-    #         "min_samples_split": [2, 5],
-    #     },
-    # },
+    "Ridge Regression": {
+        "model": Ridge(),
+        "params": {
+            "alpha": [0.1, 1, 10, 100],
+        },
+    },
+    "Lasso Regression": {
+        "model": Lasso(),
+        "params": {
+            "alpha": [0.1, 1, 10, 100],
+        },
+    },
+    "Random Forest": {
+        "model": RandomForestRegressor(),
+        # Random Forest was too slow to run with GridSearchCV, so it will use the default parameters
+        "params": {},
+    },
+    "Gradient Boosting": {
+        "model": GradientBoostingRegressor(),
+        "params": {
+            "n_estimators": [10, 100],
+            "max_depth": [3, 10],
+            "min_samples_split": [2, 5],
+        },
+    },
 }
 
 # List of setups to use, each will result in a model that can be used for a specific purpose
@@ -187,6 +187,7 @@ def train(name, X_train, y_train, X_test, y_test):
 
 
 def main():
+    print(f" --- Starting training for {len(setups)} setups {datetime.datetime.now().isoformat()} --- ")
     print("Loading data...")
     file_path = "../dataset/listings.parquet"
     data = pd.read_parquet(file_path)
