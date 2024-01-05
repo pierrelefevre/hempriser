@@ -1,10 +1,9 @@
-import os
 import json
 import flask
-import pickle
 import cerberus
 import datetime
 import transform
+import helpers
 
 import pandas as pd
 
@@ -22,36 +21,12 @@ print("Loading data")
 listings = []
 locations = []
 
-# dict of {"name": name, {"model": model, "scaler": scaler, "results": results}}
-models = {}
-
-print("Loading models")
-for name in os.listdir("models"):
-    print(f"Loading model {name}")
-    model = pickle.load(open(f"models/{name}/model.pkl", "rb"))
-    scaler = pickle.load(open(f"models/{name}/scaler.pkl", "rb"))
-    results = pd.read_csv(f"models/{name}/results.csv", index_col=0)
-    metadata = json.load(open(f"models/{name}/metadata.json", "r"))
-    models[name] = {
-        "name": name,
-        "model": model,
-        "scaler": scaler,
-        "results": results,
-        "metadata": metadata,
-    }
 
 with open("listings.json", "r") as f:
     listings = json.load(f)
 
 with open("locations.json", "r") as f:
     locations = json.load(f)
-
-
-def choose_model(transformed_params):
-    if "askingPrice" in transformed_params:
-        return models["bostadspriser-with-askingPrice"]
-
-    return models["bostadspriser-without-askingPrice"]
 
 
 @app.route("/", methods=["GET"])
@@ -67,7 +42,7 @@ def healthz():
 @app.route("/models", methods=["GET"])
 def get_models():
     models_dto = []
-    for model in models.values():
+    for model in helpers.models.values():
         models_dto.append(
             {
                 "name": model["name"],
@@ -83,10 +58,10 @@ def get_models():
 def get_listings():
     args = flask.request.args
 
-    skip = int(args.get("skip", 0))
-    limit = int(args.get("limit", 10))
+    skip = int(args.get("page", 0))
+    limit = int(args.get("pageSize", 10))
 
-    return flask.jsonify(listings[skip : skip + limit])
+    return helpers.get_live_listings(skip, limit)
 
 
 @app.route("/locations", methods=["GET"])
@@ -138,7 +113,7 @@ def predict():
         return flask.jsonify({"error": str(e)}), 400
 
     # Chose model depending on the parameters
-    model = choose_model(transformed_params.keys())
+    model = helpers.choose_model(transformed_params.keys())
 
     print("model chosen: " + model["name"])
 
