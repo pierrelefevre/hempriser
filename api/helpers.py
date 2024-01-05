@@ -28,9 +28,26 @@ def load_models():
 
 def choose_model(transformed_params):
     if "askingPrice" in transformed_params:
-        return models["bostadspriser-with-askingPrice"]
 
-    return models["bostadspriser-without-askingPrice"]
+        with_asking_price_models = []
+        for name, model in models.items():
+            if "with-askingPrice" in name:
+                with_asking_price_models.append(model)
+
+        # sort by trainedAt
+        with_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
+            
+        return with_asking_price_models[-1]    
+    else:
+        without_asking_price_models = []
+        for name, model in models.items():
+            if "without-askingPrice" in name:
+                without_asking_price_models.append(model)
+
+        # sort by trainedAt
+        without_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
+            
+        return without_asking_price_models[-1]
 
 
 def get_live_listings(page: int, page_size: int):

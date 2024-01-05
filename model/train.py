@@ -164,14 +164,14 @@ def evaluate_model(
     r2 = r2_score(y_test, y_pred)
 
     print(f"[{name}] MSE: " + str(mse) + ", RMSE: " + str(rmse) + ", R^2: " + str(r2))
-    return gs_model, mse, rmse, r2
+    return gs_model, gs_model.best_params_, mse, rmse, r2
 
 
 # def train, takes in a test train split and returns the best model and its results
 def train(name, X_train, y_train, X_test, y_test):
     results = {}
     for regressor_name, regressor in regressors.items():
-        model, mse, rmse, r2 = evaluate_model(
+        model, best_params, mse, rmse, r2 = evaluate_model(
             name,
             regressor_name,
             regressor["model"],
@@ -181,7 +181,7 @@ def train(name, X_train, y_train, X_test, y_test):
             X_test,
             y_test,
         )
-        results[regressor_name] = {"model": model, "MSE": mse, "RMSE": rmse, "R^2": r2}
+        results[regressor_name] = {"model": model, "bestParams": best_params, "mse": mse, "rmse": rmse, "r2": r2}
 
     return results
 
@@ -224,7 +224,7 @@ def main():
         results_df = pd.DataFrame(results)
         results_df = results_df.drop("model", axis=0)
         results_df = results_df.transpose()
-        results_df = results_df.sort_values(by=["RMSE"])
+        results_df = results_df.sort_values(by=["rmse"])
         best_model = results_df.index[0]
         print(f"[{name}] Best model: " + best_model)
 
@@ -252,6 +252,13 @@ def main():
             "features": setup["features"],
             "target": setup["target"],
             "trainedAt": now.isoformat(),
+            "model": {
+                "name": best_model,
+                "params": results[best_model]["bestParams"],
+                "mse": results[best_model]["mse"],
+                "rmse": results[best_model]["rmse"],
+                "r2": results[best_model]["r2"],
+            }
         }
         with open(f"{folder}/metadata.json", "w") as f:
             json.dump(metadata, f)
