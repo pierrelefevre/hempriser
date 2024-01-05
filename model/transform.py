@@ -102,6 +102,12 @@ def transform_listing(listing):
     listing['soldMonth'] = listing['soldAt'].month
     del listing['soldAt']
 
+    # Remove "district", "municipality", "county" and "city", since we use coordinates instead
+    del listing["district"]
+    del listing["municipality"]
+    del listing["county"]
+    del listing["city"]
+
     return listing
 
 
@@ -121,6 +127,7 @@ if __name__ == "__main__":
         "runningCosts": 39503,
         "hasElevator": False,
         "hasBalcony": False,
+        "housingCooperative": "Någon Bostadsrättsförening",
         "lat": 59.04411147817049,
         "long": 17.308288753630684,
         "soldAt": datetime.datetime(2016, 10, 26, 0, 0, 0, 0),

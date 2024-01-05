@@ -27,9 +27,6 @@ def train():
 
     # print how many rows and columns
     print("Rows: " + str(data.shape[0]) + ", Columns: " + str(data.shape[1]))
-    # print column names sorted alphabetically
-    print("Columns: " + str(sorted(data.columns)))
-    exit()
 
     print("Preprocessing...")
     data = data.dropna()
