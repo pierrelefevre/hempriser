@@ -37,11 +37,23 @@ def setup():
     db = client["bostadspriser"]
 
     global c
+    c["listings-live-clean"] = db["listings-live-clean"]
     c["listings"] = db["listings"]
     c["inflation"] = db["inflation"]
 
 
 setup()
+
+
+def get_live_listings(page: int, page_size: int):
+    live_listings = (
+        c["listings-live-clean"]
+        .find({}, {"_id": 0})
+        .skip(page * page_size)
+        .limit(page_size)
+    )
+
+    return list(live_listings)
 
 
 def get_inflation(year: int, month: int):
@@ -52,6 +64,7 @@ def get_inflation(year: int, month: int):
 
     res = c["inflation"].find_one({"id": key})
     return res
+
 
 def get_latest_inflation():
     now = datetime.datetime.now()

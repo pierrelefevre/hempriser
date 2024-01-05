@@ -4,3 +4,4 @@ cerberus
 python_dotenv
 pymongo
 scikit-learn
+pandas
