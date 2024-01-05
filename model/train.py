@@ -1,4 +1,6 @@
 import sys
+import os
+import json
 
 import pandas as pd
 import numpy as np
@@ -14,31 +16,31 @@ from sklearn.svm import SVR
 # List of regressors to try
 regressors = {
     "Linear Regression": {"model": LinearRegression(), "params": {}},
-    "Ridge Regression": {
-        "model": Ridge(),
-        "params": {
-            "alpha": [0.1, 1, 10, 100],
-        },
-    },
-    "Lasso Regression": {
-        "model": Lasso(),
-        "params": {
-            "alpha": [0.1, 1, 10, 100],
-        },
-    },
-    "Random Forest": {
-        "model": RandomForestRegressor(),
-        # Random Forest was too slow to run with GridSearchCV, so it will use the default parameters
-        "params": {},
-    },
-    "Gradient Boosting": {
-        "model": GradientBoostingRegressor(),
-        "params": {
-            "n_estimators": [10, 100],
-            "max_depth": [3, 10],
-            "min_samples_split": [2, 5],
-        },
-    },
+    # "Ridge Regression": {
+    #     "model": Ridge(),
+    #     "params": {
+    #         "alpha": [0.1, 1, 10, 100],
+    #     },
+    # },
+    # "Lasso Regression": {
+    #     "model": Lasso(),
+    #     "params": {
+    #         "alpha": [0.1, 1, 10, 100],
+    #     },
+    # },
+    # "Random Forest": {
+    #     "model": RandomForestRegressor(),
+    #     # Random Forest was too slow to run with GridSearchCV, so it will use the default parameters
+    #     "params": {},
+    # },
+    # "Gradient Boosting": {
+    #     "model": GradientBoostingRegressor(),
+    #     "params": {
+    #         "n_estimators": [10, 100],
+    #         "max_depth": [3, 10],
+    #         "min_samples_split": [2, 5],
+    #     },
+    # },
 }
 
 # List of setups to use, each will result in a model that can be used for a specific purpose
@@ -121,15 +123,18 @@ def get_test_train_split(dataset, features, target):
     y = dataset[target]
     X = dataset[features]
 
+    # Sort columns alphabetically to make sure the model will use the same order as the API
+    X = X.reindex(sorted(X.columns), axis=1)
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-
+    
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, scaler
 
 
 def evaluate_model(
@@ -197,7 +202,7 @@ def main():
 
     for name, setup in setups.items():
         print(f"[{name}] Getting test train split...")
-        X_train, X_test, y_train, y_test = get_test_train_split(
+        X_train, X_test, y_train, y_test, scaler = get_test_train_split(
             data, setup["features"], setup["target"]
         )
 
@@ -210,20 +215,37 @@ def main():
             y_test,
         )
 
-        best_model = results_df.index[0]
-        print(f"[{name}] Best model: " + best_model)
-
-        # Save model
-        print("Saving model...")
-        with open("../models/main.pkl", "wb") as f:
-            pickle.dump(results[best_model]["model"], f)
-
-        # Save results
+        # Find the best model
         results_df = pd.DataFrame(results)
         results_df = results_df.drop("model", axis=0)
         results_df = results_df.transpose()
         results_df = results_df.sort_values(by=["RMSE"])
-        results_df.to_csv("../models/main_results.csv")
+        best_model = results_df.index[0]
+        print(f"[{name}] Best model: " + best_model)
+
+        print(f"[{name}] Saving model and results...")
+        folder = f"../models/{name}"
+
+        # Make directory
+        os.makedirs(folder, exist_ok=True)
+
+        # Save model
+        with open(f"{folder}/model.pkl", "wb") as f:
+            pickle.dump(results[best_model]["model"], f)
+
+        # Save scaler
+        with open(f"{folder}/scaler.pkl", "wb") as f:
+            pickle.dump(scaler, f)
+
+        # Save results
+        results_df.to_csv(f"{folder}/results.csv")
+
+        # Save metadata
+        metadata = {"features": setup["features"], "target": setup["target"]}
+        with open(f"{folder}/metadata.json", "w") as f:
+            json.dump(metadata, f)
+
+        print(f"[{name}] Done!")
 
 
 if __name__ == "__main__":

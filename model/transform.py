@@ -30,9 +30,16 @@ allowed_types = [
     "Gård med jordbruk",
 ]
 
-
-def get_closest_cpi(date: datetime.datetime):
-    return db.get_inflation(date.year, date.month)
+def get_cpi(date):
+    inflation = db.get_inflation(date.year, date.month)
+    if inflation is not None:
+        return float(inflation["cpiDecided"])
+    
+    latest = db.get_latest_inflation()
+    if latest is None:
+        return None
+    
+    return float(latest["cpiDecided"])
 
 
 def convert_housing_form_to_one_hot_encoding(housing_form):
@@ -69,11 +76,11 @@ def transform_listing(listing):
         del listing["createdAt"]
 
     # Add the closest inflation data
-    inflation = get_closest_cpi(listing["soldAt"])
-    if inflation is None:
+    cpi = get_cpi(listing["soldAt"])
+    if cpi is None:
         return None
 
-    listing["cpi"] = inflation["cpiDecided"]
+    listing["cpi"] = cpi
 
     # Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
     if (

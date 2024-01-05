@@ -4,11 +4,10 @@ import datetime
 # Below are the steps to transform a listing from the raw format to the format used in the model
 # This is copied from the model/transform.py file
 #
-# 1. Remove unwanted fields: _id, url, id, createdAt
-# 2. Add the closest inflation data: cpi
-# 3. Convert "housingCooperative" to 'hasHousingCooperative'
-# 4. Convert "housingForm" to a one-hot encoding
-#       4.1 Allowed values:
+# 1. Add the closest inflation data: cpi
+# 2. Convert "housingCooperative" to 'hasHousingCooperative'
+# 3. Convert "housingForm" to a one-hot encoding
+#       3.1 Allowed values:
 #       - Tomt
 #       - Vinterbonat fritidshus
 #       - Lägenhet
@@ -24,9 +23,11 @@ import datetime
 #       - Övrig
 #       - Fritidsboende
 #       - Gård med jordbruk
-# 5. Convert "constructionYear" to "age"
-# 6. Convert "renovationYear" to "sinceLastRenovation"
-# 7. Convert "soldAt" to "soldYear" and "soldMonth"
+# 4. Convert "constructionYear" to "age"
+# 5. Convert "renovationYear" to "sinceLastRenovation"
+# 6. Convert "soldAt" to "soldYear" and "soldMonth"
+# (7.) Normalize the data - This is done for the entire dataset before training the model, and not for each listing individually
+#      So we need to do it manually here
 
 allowed_housing_forms = [
     "Tomt",
@@ -49,13 +50,13 @@ allowed_housing_forms = [
 def get_cpi(date):
     inflation = db.get_inflation(date.year, date.month)
     if inflation is not None:
-        return inflation["cpiDecided"]
+        return float(inflation["cpiDecided"])
     
     latest = db.get_latest_inflation()
     if latest is None:
         return None
     
-    return latest["cpiDecided"]
+    return float(latest["cpiDecided"])
 
 
 def convert_housing_form_to_one_hot_encoding(housing_form):
@@ -114,5 +115,8 @@ def transform_params(params):
     params["soldYear"] = params["soldAt"].year
     params["soldMonth"] = params["soldAt"].month
     del params["soldAt"]
+
+    # (7.) Normalize the data using scaler = StandardScaler()
+    
 
     return params
