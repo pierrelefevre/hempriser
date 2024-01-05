@@ -35,7 +35,7 @@ const Navbar = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
+          sx={{ mr: 1 }}
           component={Link}
           to="/"
         >
@@ -48,7 +48,7 @@ const Navbar = () => {
             flexGrow: 1,
             display: { xs: "none", sm: "none", md: "inline" },
             textDecoration: "none",
-            fontWeight: "bold",
+            fontWeight: 900,
           }}
           component={Link}
           to="/"
