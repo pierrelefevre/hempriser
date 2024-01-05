@@ -108,20 +108,11 @@ def predict():
     # Chose model depending on the parameters
     model = helpers.choose_model(transformed_params.keys())
 
-    print("model chosen: " + model["name"])
-
     # Convert to df and sort alphabetically
     transformed_params_df = pd.DataFrame([transformed_params])
-
-    print("before sort")
-    print(transformed_params_df.columns)
-
     transformed_params_df = transformed_params_df.reindex(
         sorted(transformed_params_df.columns), axis=1
     )
-
-    print("after sort")
-    print(transformed_params_df.columns)
 
     # Scale the data
     transformed_params = model["scaler"].transform(transformed_params_df)

@@ -1,10 +1,11 @@
 import sys
 import os
 import json
+import datetime
+import pickle
 
 import pandas as pd
 import numpy as np
-import pickle
 
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
@@ -129,7 +130,7 @@ def get_test_train_split(dataset, features, target):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-    
+
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
@@ -201,6 +202,10 @@ def main():
     data = data.reindex(sorted(data.columns), axis=1)
 
     for name, setup in setups.items():
+        # Allow multiple timed versions of the same model
+        now = datetime.datetime.now()
+        name_with_date = name + "-" + now.strftime("%Y-%m-%d")
+
         print(f"[{name}] Getting test train split...")
         X_train, X_test, y_train, y_test, scaler = get_test_train_split(
             data, setup["features"], setup["target"]
@@ -224,7 +229,7 @@ def main():
         print(f"[{name}] Best model: " + best_model)
 
         print(f"[{name}] Saving model and results...")
-        folder = f"../models/{name}"
+        folder = f"../models/{name_with_date}"
 
         # Make directory
         os.makedirs(folder, exist_ok=True)
@@ -241,7 +246,13 @@ def main():
         results_df.to_csv(f"{folder}/results.csv")
 
         # Save metadata
-        metadata = {"features": setup["features"], "target": setup["target"]}
+        metadata = {
+            "name": name,
+            "nameWithDate": name_with_date,
+            "features": setup["features"],
+            "target": setup["target"],
+            "trainedAt": now.isoformat(),
+        }
         with open(f"{folder}/metadata.json", "w") as f:
             json.dump(metadata, f)
 
