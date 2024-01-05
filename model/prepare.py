@@ -17,32 +17,32 @@ def main():
         if len(listings) == 0:
             print("No more listings to load")
             break
-        print("Loaded " + str(len(listings)) + " listings (page " +
-              str(page) + "), transforming...")
+        print(
+            f"Loaded {len(listings)} listings (page {page} total {(page + 1) * pageSize})"
+        )
 
-        page += 1
-
-        for i, listing in enumerate(listings):
+        for listing in listings:
             res = transform.transform_listing(listing)
             if not res:
                 continue
 
             transformed.append(res)
 
-            if i % 10000 == 0:
-                print("Done with " + str(i) +
-                      " listings, appending to parquet...")
-                df = pd.DataFrame(transformed)
-                if i == 0:
-                    df.to_parquet('../dataset/listings.parquet')
-                else:
-                    df.to_parquet(
-                        '../dataset/listings.parquet', append=True)
+        print("Transformed " + str(len(transformed)) + " listings, saving...")
+        df = pd.DataFrame(transformed)
+        if page == 0:
+            df.to_parquet("../dataset/listings.parquet", engine="fastparquet")
+        else:
+            df.to_parquet(
+                "../dataset/listings.parquet", engine="fastparquet", append=True
+            )
+
+        page += 1
 
     print("Done preparing the data")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:

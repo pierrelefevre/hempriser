@@ -30,8 +30,10 @@ allowed_types = [
     "Gård med jordbruk",
 ]
 
+
 def get_closest_cpi(date: datetime.datetime):
     return db.get_inflation(date.year, date.month)
+
 
 def convert_housing_form_to_one_hot_encoding(housing_form):
     one_hot_encoded_housing_form = {
@@ -45,7 +47,8 @@ def convert_housing_form_to_one_hot_encoding(housing_form):
         "isPairTerracedRowHouse": housing_form == "Par-/kedje-/radhus",
         "isTerracedHouse": housing_form == "Radhus",
         "isFarmWithoutForest": housing_form == "Gård utan jordbruk",
-        "isLeisureHouse": housing_form == "Fritidshus" or housing_form == "Fritidsboende",
+        "isLeisureHouse": housing_form == "Fritidshus"
+        or housing_form == "Fritidsboende",
         "isFarmWithForest": housing_form == "Gård/skog",
         "isOtherHousingForm": housing_form == "Övrig",
         "isFarmWithAgriculture": housing_form == "Gård med jordbruk",
@@ -56,51 +59,57 @@ def convert_housing_form_to_one_hot_encoding(housing_form):
 
 def transform_listing(listing):
     # Remove unwanted fields
-    if '_id' in listing.keys():
-        del listing['_id']
-    if 'url' in listing.keys():
-        del listing['url']
-    if 'id' in listing.keys():
-        del listing['id']
-    if 'createdAt' in listing.keys():
+    if "_id" in listing.keys():
+        del listing["_id"]
+    if "url" in listing.keys():
+        del listing["url"]
+    if "id" in listing.keys():
+        del listing["id"]
+    if "createdAt" in listing.keys():
         del listing["createdAt"]
 
     # Add the closest inflation data
-    inflation = get_closest_cpi(listing['soldAt'])
+    inflation = get_closest_cpi(listing["soldAt"])
     if inflation is None:
         return None
 
-    listing['cpi'] = inflation['cpiDecided']
+    listing["cpi"] = inflation["cpiDecided"]
 
     # Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
-    if 'housingCooperative' in listing.keys() and listing['housingCooperative'] is not None and listing['housingCooperative'] != '':
-        listing['hasHousingCooperative'] = True
+    if (
+        "housingCooperative" in listing.keys()
+        and listing["housingCooperative"] is not None
+        and listing["housingCooperative"] != ""
+    ):
+        listing["hasHousingCooperative"] = True
     else:
-        listing['hasHousingCooperative'] = False
-    if 'housingCooperative' in listing.keys():
-        del listing['housingCooperative']
+        listing["hasHousingCooperative"] = False
+    if "housingCooperative" in listing.keys():
+        del listing["housingCooperative"]
 
     # Convert "housingForm" to a one-hot encoding
-    for name, one_hot_encoding in convert_housing_form_to_one_hot_encoding(listing['housingForm']).items():
+    for name, one_hot_encoding in convert_housing_form_to_one_hot_encoding(
+        listing["housingForm"]
+    ).items():
         listing[name] = one_hot_encoding
-    del listing['housingForm']
+    del listing["housingForm"]
 
     # Convert "constructionYear" to "age"
     year_now = datetime.datetime.now().year
-    listing['age'] = year_now - listing['constructionYear']
-    del listing['constructionYear']
+    listing["age"] = year_now - listing["constructionYear"]
+    del listing["constructionYear"]
 
     # Convert "renovationYear" to "sinceLastRenovation"
-    if 'renovationYear' in listing.keys():
-        listing['sinceLastRenovation'] = year_now - listing['renovationYear']
-        del listing['renovationYear']
+    if "renovationYear" in listing.keys():
+        listing["sinceLastRenovation"] = year_now - listing["renovationYear"]
+        del listing["renovationYear"]
     else:
-        listing['sinceLastRenovation'] = listing['age']
+        listing["sinceLastRenovation"] = listing["age"]
 
     # Convert "soldAt" to "soldYear" and "soldMonth"
-    listing['soldYear'] = listing['soldAt'].year
-    listing['soldMonth'] = listing['soldAt'].month
-    del listing['soldAt']
+    listing["soldYear"] = listing["soldAt"].year
+    listing["soldMonth"] = listing["soldAt"].month
+    del listing["soldAt"]
 
     # Remove "district", "municipality", "county" and "city", since we use coordinates instead
     del listing["district"]
@@ -131,8 +140,9 @@ if __name__ == "__main__":
         "lat": 59.04411147817049,
         "long": 17.308288753630684,
         "soldAt": datetime.datetime(2016, 10, 26, 0, 0, 0, 0),
-        "createdAt": datetime.datetime(2024, 1, 4, 16, 56, 14, 536000)
+        "createdAt": datetime.datetime(2024, 1, 4, 16, 56, 14, 536000),
     }
 
     import json
+
     print(json.dumps(transform_listing(mock), indent=4))
