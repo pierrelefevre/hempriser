@@ -62,8 +62,8 @@ const Predict = () => {
     if (!Object.values(state).some((value) => value === "")) {
       // Convert state to correct format for the API
       const listing = {};
-      listing.latitude = parseFloat(state.latitude);
-      listing.longitude = parseFloat(state.longitude);
+      listing.lat = parseFloat(state.latitude);
+      listing.long = parseFloat(state.longitude);
       listing.askingPrice = parseInt(state.askingPrice);
       listing.fee = parseInt(state.fee);
       listing.livingArea = parseInt(state.livingArea);
@@ -76,13 +76,6 @@ const Predict = () => {
       listing.hasElevator = state.hasElevator;
       listing.hasBalcony = state.hasBalcony;
       listing.soldAt = new Date().toISOString().slice(0, 10);
-
-      // TODO: add coords in form, maybe pick from map? Or fetch from Hemnet API
-      listing.lat = 50;
-      listing.long = 50;
-
-      // Currently don't use asking price, maybe we will do it in the future
-      // listing.askingPrice = parseInt(state.askingPrice);
 
       predict(listing)
         .then((data) => {
@@ -113,8 +106,16 @@ const Predict = () => {
   ];
 
   return (
-    <Stack spacing={2}>
-      <Card>
+    <Stack spacing={5}>
+      <Card
+        sx={{
+          border: 2,
+          borderColor: "#018e51",
+          borderRadius: 2,
+          boxShadow: 5,
+          p: 3,
+        }}
+      >
         <CardHeader title="House information" />
         <CardContent>
           <Grid container spacing={2}>
@@ -317,7 +318,15 @@ const Predict = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card
+        sx={{
+          border: 2,
+          borderColor: "#018e51",
+          borderRadius: 2,
+          boxShadow: 5,
+          p: 3,
+        }}
+      >
         <CardHeader title="Predicted price" />
         <CardContent>
           <Grid container spacing={2}>
