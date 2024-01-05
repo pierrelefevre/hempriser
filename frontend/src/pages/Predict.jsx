@@ -413,11 +413,15 @@ const Predict = () => {
           {prediction && !prediction.error && (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
-                <Typography variant="h3">
-                  {prettyNum(Math.floor(prediction.prediction), {
-                    thousandsSeparator: " ",
-                  }) + " SEK"}
-                </Typography>
+                {prediction.prediction <= 10000 ? (
+                  <Typography variant="h3">Price not available</Typography>
+                ) : (
+                  <Typography variant="h3">
+                    {prettyNum(Math.floor(prediction.prediction), {
+                      thousandsSeparator: " ",
+                    }) + " SEK"}
+                  </Typography>
+                )}
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Typography variant="caption">Model used</Typography>
