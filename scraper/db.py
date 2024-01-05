@@ -42,7 +42,10 @@ def setup():
     global c
     c["listings-raw"] = db["listings-raw"]
     c["listings"] = db["listings"]
+    c["listings-live"] = db["listings-live"]
+    c["listings-live-clean"] = db["listings-live-clean"]
     c["urls"] = db["urls"]
+    c["urls-live"] = db["urls-live"]
     c["locations"] = db["locations"]
     c["search-terms"] = db["search-terms"]
     c["inflation"] = db["inflation"]
@@ -54,21 +57,29 @@ setup()
 # Write
 
 
-def write_raw_listing(listing: dict):
+def write_raw_listing(listing: dict, live=False):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
     listing["createdAt"] = datetime.datetime.now()
     listing["status"] = "pending"
 
     try:
-        c["listings-raw"].insert_one(listing)
+        c[collection].insert_one(listing)
     except mongo.errors.BulkWriteError as e:
         pass
     except mongo.errors.DuplicateKeyError:
         pass
 
 
-def write_raw_listing_coord(url: str, coord: dict):
+def write_raw_listing_coord(url: str, coord: dict, live=False):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
     try:
-        c["listings-raw"].update_one(
+        c[collection].update_one(
             {"url": url},
             {"$set": {"coord": coord}},
         )
@@ -78,12 +89,15 @@ def write_raw_listing_coord(url: str, coord: dict):
         pass
 
 
-def write_listings(listings: dict):
+def write_listings(listings: dict, live=False):
     for listing in listings:
         listing["createdAt"] = datetime.datetime.now()
 
+    collection = "listings"
+    if live:
+        collection = "listings-live-clean"
     try:
-        c["listings"].insert_many(listings, ordered=False)
+        c[collection].insert_many(listings, ordered=False)
     except mongo.errors.BulkWriteError as e:
         pass
     except mongo.errors.DuplicateKeyError:
@@ -103,7 +117,7 @@ def write_locations(locations: list):
         pass
 
 
-def write_urls(urls: list):
+def write_urls(urls: list, live=False):
     write = []
     for url in urls:
         write.append(
@@ -115,7 +129,10 @@ def write_urls(urls: list):
         )
 
     try:
-        c["urls"].insert_many(write, ordered=False)
+        if live:
+            c["urls-live"].insert_many(write, ordered=False)
+        else:
+            c["urls"].insert_many(write, ordered=False)
     except mongo.errors.BulkWriteError as e:
         pass
     except mongo.errors.DuplicateKeyError:
@@ -131,8 +148,11 @@ def write_inflations(inflations: list):
         pass
 
 
-def marks_urls_as_done(urls: list):
-    c["urls"].update_many(
+def marks_urls_as_done(urls: list, live=False):
+    collection = "urls"
+    if live:
+        collection = "urls-live"
+    c[collection].update_many(
         {"url": {"$in": urls}},
         {"$set": {"status": "done"}},
     )
@@ -145,20 +165,41 @@ def mark_locations_as_done(ids: list):
     )
 
 
-def mark_raw_listing_as_missing_fields(url: str):
-    c["listings-raw"].update_one(
+def mark_locations_last_scraped(ids: list):
+    c["locations"].update_many(
+        {"id": {"$in": ids}},
+        {"$set": {"lastScraped": datetime.datetime.now()}},
+    )
+
+
+def mark_raw_listing_as_missing_fields(url: str, live=False):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
+    c[collection].update_one(
         {"url": url},
         {"$set": {"status": "missingFields"}},
     )
 
-def mark_raw_listing_as_failed(url: str):
-    c["listings-raw"].update_one(
+
+def mark_raw_listing_as_failed(url: str, live=False):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
+    c[collection].update_one(
         {"url": url},
         {"$set": {"status": "failed"}},
     )
 
-def mark_raw_listings_as_done(urls: list):
-    c["listings-raw"].update_many(
+
+def mark_raw_listings_as_done(urls: list, live=False):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
+    c[collection].update_many(
         {"url": {"$in": urls}},
         {"$set": {"status": "done"}},
     )
@@ -190,13 +231,9 @@ def update_status(hostname: str, timestamp: datetime.datetime, status: str):
 
 # Read
 def get_listings(n: int = 0, page: int = 0):
-    res = (
-        c["listings"]
-        .find({})
-        .skip(n * page)
-        .limit(n)
-    )
+    res = c["listings"].find({}).skip(n * page).limit(n)
     return list(res)
+
 
 def get_pending_locations(n: int = 0, page: int = 0, random: bool = False):
     if random:
@@ -218,9 +255,34 @@ def get_pending_locations(n: int = 0, page: int = 0, random: bool = False):
     return list(res)
 
 
-def get_pending_urls(n: int = 0, page: int = 0, random: bool = False):
+# Get locations which do not have lastScraped, or where lastScraped is older than 1 day
+def get_next_live_locations(n=10):
+    res = (
+        c["locations"]
+        .find(
+            {
+                "$or": [
+                    {"lastScraped": None},
+                    {
+                        "lastScraped": {
+                            "$lt": datetime.datetime.now() - datetime.timedelta(days=1)
+                        }
+                    },
+                ]
+            }
+        )
+        .limit(n)
+    )
+    return list(res)
+
+
+def get_pending_urls(n: int = 0, page: int = 0, random: bool = False, live=False):
+    collection = "urls"
+    if live:
+        collection = "urls-live"
+
     if random:
-        res = c["urls"].aggregate(
+        res = c[collection].aggregate(
             [
                 {"$match": {"status": "pending"}},
                 {"$sample": {"size": n}},
@@ -229,7 +291,7 @@ def get_pending_urls(n: int = 0, page: int = 0, random: bool = False):
         return list(res)
 
     res = (
-        c["urls"]
+        c[collection]
         .find({"status": "pending"})
         .sort("createdAt", -1)
         .skip(n * page)
@@ -238,9 +300,15 @@ def get_pending_urls(n: int = 0, page: int = 0, random: bool = False):
     return list(res)
 
 
-def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
+def get_pending_raw_listings(
+    n: int = 0, page: int = 0, random: bool = False, live=False
+):
+    collection = "listings-raw"
+    if live:
+        collection = "listings-live"
+
     if random:
-        res = c["listings-raw"].aggregate(
+        res = c[collection].aggregate(
             [
                 {"$match": {"status": "pending"}},
                 {"$sample": {"size": n}},
@@ -249,8 +317,7 @@ def get_pending_raw_listings(n: int = 0, page: int = 0, random: bool = False):
         return list(res)
 
     res = (
-        c["listings-raw"]
-        .find({"status": "pending"})
+        c[collection].find({"status": "pending"})
         # .sort("createdAt", -1)
         # .skip(n * page)
         .limit(n)

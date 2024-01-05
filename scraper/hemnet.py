@@ -2,7 +2,7 @@ import requests
 import json
 
 
-def get_urls(location_id, page):
+def get_urls(location_id, page, live=False):
     headers = {
         "authority": "www.hemnet.se",
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -23,9 +23,12 @@ def get_urls(location_id, page):
     res = s.get(url="https://hemnet.se", headers=headers)
     cookies = dict(res.cookies)
 
+    url = f"https://www.hemnet.se/salda/bostader?location_ids%5B%5D={location_id}&page={page}"
+    if live:
+        url = f"https://www.hemnet.se/bostader?location_ids%5B%5D={location_id}&page={page}"
     try:
         response = requests.get(
-            url=f"https://www.hemnet.se/salda/bostader?location_ids%5B%5D={location_id}&page={page}",
+            url=url,
             headers=headers,
             cookies=cookies,
         )
@@ -172,6 +175,7 @@ def get_coords(url):
             "variables": {"id": url.split("-")[-1]},
             "query": "query mapAndTravelTimes($id: ID!){listing(id: $id){coordinates{lat long}}}",
         }
+
         response = requests.post(endpoint, headers=headers, json=data)
         return response.json()["data"]["listing"]["coordinates"]
 
@@ -205,5 +209,5 @@ def get_coords(url):
 
 
 if __name__ == "__main__":
-    url = "https://www.hemnet.se/salda/radhus-7rum-helenelund-fagelsangen-sollentuna-kommun-sorgardsvagen-15-1395137"
+    url = "https://www.hemnet.se/bostad/lagenhet-3rum-lindholmen-goteborgs-kommun-lodjursstraket-1-karlatornet,-vaning-50-18685980"
     print(json.dumps(get_coords(url)))

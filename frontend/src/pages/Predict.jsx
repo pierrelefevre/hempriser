@@ -4,14 +4,15 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   FormControl,
   FormControlLabel,
+  FormGroup,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   Stack,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -110,7 +111,7 @@ const Predict = () => {
         setPrediction(data);
       })
       .catch((error) => {
-        console.log(error);
+        setPrediction({ error: error });
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,6 +204,7 @@ const Predict = () => {
                 }
                 value={state.fee}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -217,6 +219,7 @@ const Predict = () => {
                 }
                 value={state.livingArea}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -231,6 +234,7 @@ const Predict = () => {
                 }
                 value={state.rooms}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -245,6 +249,7 @@ const Predict = () => {
                 }
                 value={state.constructionYear}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -259,6 +264,7 @@ const Predict = () => {
                 }
                 value={state.renovationYear}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -273,6 +279,7 @@ const Predict = () => {
                 }
                 value={state.runningCosts}
                 type="number"
+                sx={{ width: 300 }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
@@ -296,46 +303,44 @@ const Predict = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6} md={6}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.housingCooperative}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        housingCooperative: e.target.checked,
-                      })
-                    }
-                  />
-                }
-                label="Housing cooperative"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.hasElevator}
-                    onChange={(e) =>
-                      setState({ ...state, hasElevator: e.target.checked })
-                    }
-                  />
-                }
-                label="Has elevator"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.hasBalcony}
-                    onChange={(e) =>
-                      setState({ ...state, hasBalcony: e.target.checked })
-                    }
-                  />
-                }
-                label="Has balcony"
-              />
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.housingCooperative}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          housingCooperative: e.target.checked,
+                        })
+                      }
+                    />
+                  }
+                  label="Housing cooperative"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.hasElevator}
+                      onChange={(e) =>
+                        setState({ ...state, hasElevator: e.target.checked })
+                      }
+                    />
+                  }
+                  label="Elevator"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.hasBalcony}
+                      onChange={(e) =>
+                        setState({ ...state, hasBalcony: e.target.checked })
+                      }
+                    />
+                  }
+                  label="Balcony"
+                />
+              </FormGroup>
             </Grid>
 
             <Grid item xs={12} sm={12} md={12}>
@@ -345,13 +350,13 @@ const Predict = () => {
             <Grid item xs={12} sm={4} md={4}>
               <FormControlLabel
                 control={
-                  <Switch checked={askingPrice} onChange={(e) => setAskingPrice(e.target.checked)} />
+                  <Checkbox
+                    checked={askingPrice}
+                    onChange={(e) => setAskingPrice(e.target.checked)}
+                  />
                 }
                 label="Have an asking price already?"
               />
-            </Grid>
-
-            <Grid item xs={12} sm={4} md={4}>
               <TextField
                 label="Asking price"
                 variant="outlined"
@@ -367,7 +372,9 @@ const Predict = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={4} md={4}>
+            <Grid item xs={12} sm={5} md={5}></Grid>
+
+            <Grid item xs={12} sm={3} md={3}>
               <Button
                 variant="contained"
                 onClick={() => generateRandomState()}
@@ -391,12 +398,19 @@ const Predict = () => {
       >
         <CardHeader title="Predicted price" />
         <CardContent>
-          {!prediction ? (
+          {!prediction && (
             <Typography variant="body2">
               Fill in all fields to show price. Predictions with Asking Price is
               optional, and uses a different model
             </Typography>
-          ) : (
+          )}
+          {prediction && prediction.error && (
+            <Typography variant="body2">
+              {"Could not get price because of error: " +
+                JSON.stringify(prediction.error)}
+            </Typography>
+          )}
+          {prediction && !prediction.error && (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <Typography variant="h3">
