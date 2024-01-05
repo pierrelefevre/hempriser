@@ -65,3 +65,13 @@ def get_inflation(year: int, month: int):
     return res
 
 
+def get_latest_inflation():
+    now = datetime.datetime.now()
+
+    # do 100 iterations to find the latest inflation, if not found, return None
+    for i in range(100):
+        res = get_inflation(now.year, now.month)
+        if res is not None:
+            return res
+        else:
+            now = now - datetime.timedelta(days=30)
