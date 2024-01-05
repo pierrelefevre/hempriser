@@ -111,7 +111,7 @@ const Predict = () => {
         setPrediction(data);
       })
       .catch((error) => {
-        console.log(error);
+        setPrediction({ error: error });
       });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -398,12 +398,19 @@ const Predict = () => {
       >
         <CardHeader title="Predicted price" />
         <CardContent>
-          {!prediction ? (
+          {!prediction && (
             <Typography variant="body2">
               Fill in all fields to show price. Predictions with Asking Price is
               optional, and uses a different model
             </Typography>
-          ) : (
+          )}
+          {prediction && prediction.error && (
+            <Typography variant="body2">
+              {"Could not get price because of error: " +
+                JSON.stringify(prediction.error)}
+            </Typography>
+          )}
+          {prediction && !prediction.error && (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <Typography variant="h3">
