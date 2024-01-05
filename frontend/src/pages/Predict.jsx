@@ -1,5 +1,5 @@
 import {
-  Autocomplete,
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -9,24 +9,27 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Switch,
   TextField,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { predict } from "../api/api";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 
-import locations from "../api/locations.json";
+import "leaflet/dist/leaflet.css";
 
 const Predict = () => {
   const [state, setState] = useState({
-    district: "",
-    districtInput: "",
-    municipality: "",
-    municipalityInput: "",
-    county: "",
-    countyInput: "",
-    city: "",
-    cityInput: "",
+    latitude: "59.3361328",
+    longitude: "18.0726201",
     askingPrice: "",
     fee: "",
     livingArea: "",
@@ -41,15 +44,27 @@ const Predict = () => {
   });
   const [predictedPrice, setPredictedPrice] = useState("");
 
+  const MapEventComponent = () => {
+    const map = useMapEvents({
+      moveend: () => {
+        setState({
+          ...state,
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        });
+      },
+    });
+
+    return null;
+  };
+
   useEffect(() => {
-    console.log(state.district);
     if (!Object.values(state).some((value) => value === "")) {
       // Convert state to correct format for the API
-      const listing = {}
-      listing.district = parseInt(state.district.split(", ")[1])
-      listing.municipality = parseInt(state.municipality.split(", ")[1]);
-      listing.county = parseInt(state.county.split(", ")[1]);
-      listing.city = parseInt(state.city.split(", ")[1]);
+      const listing = {};
+      listing.latitude = parseFloat(state.latitude);
+      listing.longitude = parseFloat(state.longitude);
+      listing.askingPrice = parseInt(state.askingPrice);
       listing.fee = parseInt(state.fee);
       listing.livingArea = parseInt(state.livingArea);
       listing.rooms = parseInt(state.rooms);
@@ -65,13 +80,13 @@ const Predict = () => {
       // TODO: add coords in form, maybe pick from map? Or fetch from Hemnet API
       listing.lat = 50;
       listing.long = 50;
-      
+
       // Currently don't use asking price, maybe we will do it in the future
       // listing.askingPrice = parseInt(state.askingPrice);
 
       predict(listing)
         .then((data) => {
-          setPredictedPrice(data.prediction)
+          setPredictedPrice(data.prediction);
         })
         .catch((error) => {
           console.log(error);
@@ -98,226 +113,227 @@ const Predict = () => {
   ];
 
   return (
-    <Card>
-      <CardHeader title="Predict" />
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={6}>
-            <Autocomplete
-              options={locations
-                .filter((option) => option.type === "DISTRICT")
-                .map((option) => option.fullName + ", " + option.id)}
-              onChange={(event, newValue) => {
-                setState({ ...state, district: newValue });
-              }}
-              onInputChange={(event, newInputValue) => {
-                setState({ ...state, districtInput: newInputValue });
-              }}
-              inputValue={state.districtInput}
-              value={state.district}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="District" />
-              )}
-            />
-          </Grid>
+    <Stack spacing={2}>
+      <Card>
+        <CardHeader title="House information" />
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={10} md={10}>
+                  <MapContainer
+                    center={[59.3361328, 18.0726201]}
+                    zoom={13}
+                    scrollWheelZoom={false}
+                    style={{ height: "300px", width: "100 %" }}
+                  >
+                    <TileLayer url="https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png	" />
+                    <MapEventComponent />
+                    <Marker position={[state.latitude, state.longitude]} />
+                  </MapContainer>
+                </Grid>
+                <Grid item xs={12} sm={2} md={2}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={12}>
+                      <TextField
+                        label="Latitude"
+                        variant="standard"
+                        value={state.latitude}
+                        disabled
+                      />
+                    </Grid>
 
-          <Grid item xs={12} sm={6} md={6}>
-            <Autocomplete
-              options={locations
-                .filter((option) => option.type === "MUNICIPALITY")
-                .map((option) => option.fullName + ", " + option.id)}
-              onChange={(event, newValue) => {
-                setState({ ...state, municipality: newValue });
-              }}
-              onInputChange={(event, newInputValue) => {
-                setState({ ...state, municipalityInput: newInputValue });
-              }}
-              inputValue={state.municipalityInput}
-              value={state.municipality}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Municipality" />
-              )}
-            />
-          </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
+                      <TextField
+                        label="Longitude"
+                        variant="standard"
+                        value={state.longitude}
+                        disabled
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={6}>
-            <Autocomplete
-              options={locations
-                .filter((option) => option.type === "COUNTY")
-                .map((option) => option.fullName + ", " + option.id)}
-              onChange={(event, newValue) => {
-                setState({ ...state, county: newValue });
-              }}
-              onInputChange={(event, newInputValue) => {
-                setState({ ...state, countyInput: newInputValue });
-              }}
-              inputValue={state.countyInput}
-              value={state.county}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="County" />}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={6}>
-            <Autocomplete
-              options={locations
-                .filter((option) => option.type === "CITY")
-                .map((option) => option.fullName + ", " + option.id)}
-              onChange={(event, newValue) => {
-                setState({ ...state, city: newValue });
-              }}
-              onInputChange={(event, newInputValue) => {
-                setState({ ...state, cityInput: newInputValue });
-              }}
-              inputValue={state.cityInput}
-              value={state.city}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="City" />}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Asking price"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  askingPrice: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.askingPrice}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Fee"
-              variant="outlined"
-              onChange={(e) =>
-                setState({ ...state, fee: parseInt(e.target.value).toString() })
-              }
-              value={state.fee}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Living area"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  livingArea: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.livingArea}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Rooms"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  rooms: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.rooms}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Construction year"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  constructionYear: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.constructionYear}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Renovation year"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  renovationYear: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.renovationYear}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Running costs"
-              variant="outlined"
-              onChange={(e) =>
-                setState({
-                  ...state,
-                  runningCosts: parseInt(e.target.value).toString(),
-                })
-              }
-              value={state.runningCosts}
-              type="number"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <FormControl>
-              <InputLabel id="housing-form-label">Housing form</InputLabel>
-              <Select
-                labelId="housing-form-label"
-                label="Housing form"
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Asking price"
+                variant="outlined"
                 onChange={(e) =>
-                  setState({ ...state, housingForm: e.target.value })
+                  setState({
+                    ...state,
+                    askingPrice: parseInt(e.target.value).toString(),
+                  })
                 }
-                sx={{ width: 300 }}
-                value={state.housingForm}
-              >
-                {housingForms.map((housingForm) => (
-                  <MenuItem value={housingForm} key={housingForm}>
-                    {housingForm}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                value={state.askingPrice}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Fee"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    fee: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.fee}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Living area"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    livingArea: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.livingArea}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Rooms"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    rooms: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.rooms}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Construction year"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    constructionYear: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.constructionYear}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Renovation year"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    renovationYear: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.renovationYear}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Running costs"
+                variant="outlined"
+                onChange={(e) =>
+                  setState({
+                    ...state,
+                    runningCosts: parseInt(e.target.value).toString(),
+                  })
+                }
+                value={state.runningCosts}
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <FormControl>
+                <InputLabel id="housing-form-label">Housing form</InputLabel>
+                <Select
+                  labelId="housing-form-label"
+                  label="Housing form"
+                  onChange={(e) =>
+                    setState({ ...state, housingForm: e.target.value })
+                  }
+                  sx={{ width: 300 }}
+                  value={state.housingForm}
+                >
+                  {housingForms.map((housingForm) => (
+                    <MenuItem value={housingForm} key={housingForm}>
+                      {housingForm}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={(e) =>
+                      setState({
+                        ...state,
+                        housingCooperative: e.target.checked,
+                      })
+                    }
+                  />
+                }
+                label="Housing cooperative"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={(e) =>
+                      setState({ ...state, hasElevator: e.target.checked })
+                    }
+                  />
+                }
+                label="Has elevator"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    onChange={(e) =>
+                      setState({ ...state, hasBalcony: e.target.checked })
+                    }
+                  />
+                }
+                label="Has balcony"
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <FormControlLabel
-              control={<Switch onChange={(e) => setState({ ...state, housingCooperative: e.target.checked })} />}
-              label="Housing cooperative"
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <FormControlLabel control={<Switch onChange={(e) => setState({ ...state, hasElevator: e.target.checked })} />} label="Has elevator" />
-          </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-            <FormControlLabel control={<Switch onChange={(e) => setState({ ...state, hasBalcony: e.target.checked })} />} label="Has balcony" />
-          </Grid>
+        </CardContent>
+      </Card>
 
-          {/* submit box */}
-          <Grid item xs={12} sm={6} md={6}>
-            <TextField
-              label="Predicted price"
-              variant="outlined"
-              value={predictedPrice}
-              disabled
-            />
+      <Card>
+        <CardHeader title="Predicted price" />
+        <CardContent>
+          <Grid container spacing={2}>
+            {/* submit box */}
+            <Grid item xs={12} sm={6} md={6}>
+              <TextField
+                label="Predicted price"
+                variant="standard"
+                value={predictedPrice}
+                disabled
+              />
+            </Grid>
           </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Stack>
   );
 };
 
