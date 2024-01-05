@@ -44,7 +44,7 @@ def get_models():
         models_dto.append(
             {
                 "name": model["name"],
-                "results": model["results"].to_dict(),
+                "results": model["results"].transpose().to_dict(),
                 "metadata": model["metadata"],
             }
         )
