@@ -148,6 +148,20 @@ def write_inflations(inflations: list):
         pass
 
 
+def write_prediction_live(url: str, prediction: dict):
+    c["listings-live-clean"].update_one(
+        {"url": url},
+        {"$set": {"prediction": prediction}},
+    )
+
+
+def reset_all_predictions():
+    c["listings-live-clean"].update_many(
+        {},
+        {"$unset": {"prediction": ""}},
+    )
+
+
 def marks_urls_as_done(urls: list, live=False):
     collection = "urls"
     if live:
@@ -276,6 +290,22 @@ def get_next_live_locations(n=10):
     return list(res)
 
 
+def get_unpredicted_live_listings(n=10):
+    res = (
+        c["listings-live-clean"]
+        .find(
+            {
+                "$or": [
+                    {"prediction": None},
+                    {"prediction": {"$exists": False}},
+                ]
+            }
+        )
+        .limit(n)
+    )
+    return list(res)
+
+
 def get_pending_urls(n: int = 0, page: int = 0, random: bool = False, live=False):
     collection = "urls"
     if live:
@@ -364,6 +394,18 @@ def get_inflation(year: int, month: int):
 
     res = c["inflation"].find_one({"id": key})
     return res
+
+
+def get_latest_inflation():
+    now = datetime.datetime.now()
+
+    # do 100 iterations to find the latest inflation, if not found, return None
+    for i in range(100):
+        res = get_inflation(now.year, now.month)
+        if res is not None:
+            return res
+        else:
+            now = now - datetime.timedelta(days=30)
 
 
 # Patch

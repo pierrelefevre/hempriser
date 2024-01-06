@@ -1,2 +1,5 @@
 pymongo
 python_dotenv
+cerberus
+scikit-learn
+pandas

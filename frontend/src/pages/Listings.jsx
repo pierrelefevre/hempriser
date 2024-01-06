@@ -35,6 +35,53 @@ const Listings = () => {
     setLoading(false);
   }, [listings]);
 
+  const renderPredictions = (listing) => {
+    if (!listing.prediction) {
+      return null;
+    }
+
+    let withAskingPrice = 0;
+    let withoutAskingPrice = 0;
+
+    const format = (num) => {
+      return prettyNum(Math.floor(num), {
+        thousandsSeparator: " ",
+      });
+    };
+
+    Object.keys(listing.prediction).forEach((key) => {
+      if (key.includes("with-askingPrice")) {
+        withAskingPrice = listing.prediction[key].prediction;
+      } else {
+        withoutAskingPrice = listing.prediction[key].prediction;
+      }
+    });
+
+    return (
+      <>
+        {withAskingPrice > 10000 && (
+          <Chip
+            icon={<Iconify icon="mdi:currency-usd" />}
+            label={`Predicted Price (with asking price): ${format(
+              withAskingPrice
+            )} SEK`}
+            color="secondary"
+          />
+        )}
+
+        {withoutAskingPrice > 10000 && (
+          <Chip
+            icon={<Iconify icon="mdi:currency-usd" />}
+            label={`Predicted Price (without asking price): ${format(
+              withoutAskingPrice
+            )} SEK`}
+            color="secondary"
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <BottomScrollListener onBottom={handleBottom}>
       <Grid container spacing={5}>
@@ -93,12 +140,6 @@ const Listings = () => {
                     label={`Type: ${listing.housingForm}`}
                   />
                   <Chip
-                    icon={<Iconify icon="mdi:currency-usd" />}
-                    label={`Asking Price: ${prettyNum(listing.askingPrice, {
-                      thousandsSeparator: " ",
-                    })} SEK`}
-                  />
-                  <Chip
                     icon={<Iconify icon="mdi:calendar" />}
                     label={`Construction Year: ${listing.constructionYear}`}
                   />
@@ -150,6 +191,15 @@ const Listings = () => {
                       sx={{ border: 3, borderColor: "#018e51" }}
                     />
                   )}
+
+                  <Chip
+                    icon={<Iconify icon="mdi:currency-usd" />}
+                    label={`Asking Price: ${prettyNum(listing.askingPrice, {
+                      thousandsSeparator: " ",
+                    })} SEK`}
+                    color="primary"
+                  />
+                  {renderPredictions(listing)}
                 </Stack>
                 {listing.lat && listing.long && (
                   <Box sx={{ height: 194, width: "100%", mt: 3 }}>
