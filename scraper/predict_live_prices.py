@@ -101,6 +101,9 @@ while True:
         time.sleep(60)
 
     for listing in listings:
+        if "lat" not in listing.keys() or "long" not in listing.keys():
+            print("Skipping listing without lat/long")
+            continue
         prediction = {}
         for model_name in models:
             model = models[model_name]["model"]
