@@ -2,8 +2,6 @@ import os
 import pickle
 import json
 import db
-import requests
-import datetime
 
 import pandas as pd
 
