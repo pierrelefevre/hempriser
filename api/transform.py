@@ -89,65 +89,61 @@ def transform_params(params):
     It should take the parameters from the API request and transform them as a listing is transformed in the model.
     """
 
-    transformed_params = {}
+    t_params = {}
 
     # 0. Insert all values that should be kept as is
-    transformed_params["livingArea"] = params["livingArea"]
-    transformed_params["rooms"] = params["rooms"]
+    t_params["livingArea"] = params["livingArea"]
+    t_params["rooms"] = params["rooms"]
     if "askingPrice" in params:
-        transformed_params["askingPrice"] = params["askingPrice"]
-    transformed_params["hasElevator"] = params["hasElevator"]
-    transformed_params["hasBalcony"] = params["hasBalcony"]
-    transformed_params["lat"] = params["lat"]
-    transformed_params["long"] = params["long"]
-    transformed_params["fee"] = params["fee"]
-    transformed_params["runningCosts"] = params["runningCosts"]
+        t_params["askingPrice"] = params["askingPrice"]
+    t_params["hasElevator"] = params["hasElevator"]
+    t_params["hasBalcony"] = params["hasBalcony"]
+    t_params["lat"] = params["lat"]
+    t_params["long"] = params["long"]
+    t_params["fee"] = params["fee"]
+    t_params["runningCosts"] = params["runningCosts"]
 
     # 1. Get the closest inflation data
     cpi = get_cpi(params["soldAt"])
     if cpi is None:
         raise Exception("No CPI data found for the given date")
 
-    transformed_params["cpi"] = cpi
+    t_params["cpi"] = cpi
 
     # 2. Convert "housingCooperative" to 'hasHousingCooperative'
     if "hasHousingCooperative" in params:
-        transformed_params["hasHousingCooperative"] = params["hasHousingCooperative"]
+        t_params["hasHousingCooperative"] = params["hasHousingCooperative"]
     elif "housingCooperative" in params:
-        transformed_params["hasHousingCooperative"] = (
-            params["housingCooperative"] is not None
-        )
+        t_params["hasHousingCooperative"] = params["housingCooperative"] is not None
 
     # 3. Convert "housingForm" to a one-hot encoding
     for name, one_hot_encoding in convert_housing_form_to_one_hot_encoding(
         params["housingForm"]
     ).items():
-        transformed_params[name] = one_hot_encoding
+        t_params[name] = one_hot_encoding
 
     # 4. Convert "constructionYear" to "age"
     year_now = datetime.datetime.now().year
-    transformed_params["age"] = year_now - params["constructionYear"]
+    t_params["age"] = year_now - params["constructionYear"]
 
     # 5. Convert "renovationYear" to "sinceLastRenovation"
-    transformed_params["sinceLastRenovation"] = year_now - params["renovationYear"]
+    t_params["sinceLastRenovation"] = year_now - params["renovationYear"]
 
     # 6. Convert "soldAt" to "soldYear" and "soldMonth"
-    transformed_params["soldYear"] = params["soldAt"].year
-    transformed_params["soldMonth"] = params["soldAt"].month
+    t_params["soldYear"] = params["soldAt"].year
+    t_params["soldMonth"] = params["soldAt"].month
 
     # Chose model depending on the parameters
-    model = helpers.choose_model(transformed_params.keys())
+    model, t_params = helpers.choose_model(t_params)
 
     # Convert to df and sort alphabetically
-    transformed_params_df = pd.DataFrame([transformed_params])
-    transformed_params_df = transformed_params_df.reindex(
-        sorted(transformed_params_df.columns), axis=1
-    )
+    t_params_df = pd.DataFrame([t_params])
+    t_params_df = t_params_df.reindex(sorted(t_params_df.columns), axis=1)
 
     # Scale the data
-    transformed_params = model["scaler"].transform(transformed_params_df)
+    t_params = model["scaler"].transform(t_params_df)
 
     # Extract the values
-    transformed_params_values = transformed_params[0]
+    t_params_values = t_params[0]
 
-    return transformed_params_values, model
+    return t_params_values, model
