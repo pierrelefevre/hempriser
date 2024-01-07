@@ -168,7 +168,7 @@ const Predict = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={10} md={10}>
                   <MapContainer
-                    center={[59.3361328, 18.0726201]}
+                    center={[state.latitude, state.longitude]}
                     zoom={13}
                     scrollWheelZoom={false}
                     style={{ height: "300px", width: "100 %" }}
@@ -185,7 +185,12 @@ const Predict = () => {
                         label="Latitude"
                         variant="standard"
                         value={state.latitude}
-                        disabled
+                        onChange={(e) =>
+                          setState({
+                            ...state,
+                            latitude: parseFloat(e.target.value),
+                          })
+                        }
                       />
                     </Grid>
 
@@ -194,7 +199,12 @@ const Predict = () => {
                         label="Longitude"
                         variant="standard"
                         value={state.longitude}
-                        disabled
+                        onChange={(e) =>
+                          setState({
+                            ...state,
+                            longitude: parseFloat(e.target.value),
+                          })
+                        }
                       />
                     </Grid>
                   </Grid>
