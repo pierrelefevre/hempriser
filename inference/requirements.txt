@@ -1,0 +1,3 @@
+pymongo
+python_dotenv
+pandas
