@@ -1,3 +1,4 @@
 pymongo
 python_dotenv
 pandas
+scikit-learn
