@@ -53,13 +53,13 @@ def choose_model(params):
     new_params = params.copy()
 
     # 1. cpi is not in the "combine-cpi" models
-    ### However, after 2024-01-07:15:00:00, cpi should be present
-    if "combine-cpi" in model["name"] and "cpi" in params.keys() and model["metadata"]["trainedAt"] < "2024-01-07:15:00:00":
+    ### However, after 2024-01-07:14:00:00, cpi should be present
+    if "combine-cpi" in model["name"] and "cpi" in params.keys() and model["metadata"]["trainedAt"] < "2024-01-07:14:00:00":
         del new_params["cpi"]
 
     # 2. soldAt was parsed differently before
-    ### If model is trained earlier than 2024-01-07:15:00:00, remove "yearsSinceSold", otherwise remove "soldYear" and "soldMonth"
-    if model["metadata"]["trainedAt"] < "2024-01-07:15:00:00":
+    ### If model is trained earlier than 2024-01-07:14:00:00, remove "yearsSinceSold", otherwise remove "soldYear" and "soldMonth"
+    if model["metadata"]["trainedAt"] < "2024-01-07:14:00:00":
         del new_params["yearsSinceSold"]
     else:
         del new_params["soldYear"]
