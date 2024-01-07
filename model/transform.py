@@ -3,13 +3,12 @@ import db
 
 # Below are the steps to transform a listing from the raw format to the format used in the model
 # This is useful when the same transformation needs to be done on the API side as on the model side
-# 1. Remove unwanted fields
-# 2. Add the closest inflation data
-# 3. Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
-# 4. Convert "housingForm" to a one-hot encoding
-# 5. Convert "constructionYear" to "age"
-# 6. Convert "renovationYear" to "sinceLastRenovation"
-# 7. Convert "soldAt" to "soldYear" and "soldMonth"
+# 1. Add the closest inflation data
+# 2. Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
+# 3. Convert "housingForm" to a one-hot encoding
+# 4. Convert "constructionYear" to "age"
+# 5. Convert "renovationYear" to "sinceLastRenovation"
+# 6. Convert "soldAt" to "yearsSinceSold" (represented as a float since we know the exact date)
 
 
 allowed_types = [
@@ -30,19 +29,8 @@ allowed_types = [
     "Gård med jordbruk",
 ]
 
-def get_cpi(date):
-    inflation = db.get_inflation(date.year, date.month)
-    if inflation is not None:
-        return float(inflation["cpiDecided"])
-    
-    latest = db.get_latest_inflation()
-    if latest is None:
-        return None
-    
-    return float(latest["cpiDecided"])
 
-
-def convert_housing_form_to_one_hot_encoding(housing_form):
+def housing_one_hot(housing_form):
     one_hot_encoded_housing_form = {
         "isPlot": housing_form == "Tomt",
         "isWinterLeisureHouse": housing_form == "Vinterbonat fritidshus",
@@ -65,22 +53,27 @@ def convert_housing_form_to_one_hot_encoding(housing_form):
 
 
 def transform_listing(listing):
-    # Remove unwanted fields
-    if "_id" in listing.keys():
-        del listing["_id"]
-    if "url" in listing.keys():
-        del listing["url"]
-    if "id" in listing.keys():
-        del listing["id"]
-    if "createdAt" in listing.keys():
-        del listing["createdAt"]
+    t_listing = {}
 
-    # Add the closest inflation data
-    cpi = get_cpi(listing["soldAt"])
+    # 0. Insert all values that should be kept as is
+    t_listing["finalPrice"] = listing["finalPrice"]
+    t_listing["livingArea"] = listing["livingArea"]
+    t_listing["rooms"] = listing["rooms"]
+    if "askingPrice" in listing:
+        t_listing["askingPrice"] = listing["askingPrice"]
+    t_listing["hasElevator"] = listing["hasElevator"]
+    t_listing["hasBalcony"] = listing["hasBalcony"]
+    if "lat" in listing and "long" in listing:
+        t_listing["lat"] = listing["lat"]
+        t_listing["long"] = listing["long"]
+    t_listing["fee"] = listing["fee"]
+    t_listing["runningCosts"] = listing["runningCosts"]
+
+    cpi = db.get_cpi(listing["soldAt"])
     if cpi is None:
         return None
 
-    listing["cpi"] = cpi
+    t_listing["cpi"] = cpi
 
     # Convert 'housingCooperative' to 'hasHousingCooperative', if it exists, is not None and is not empty
     if (
@@ -88,43 +81,30 @@ def transform_listing(listing):
         and listing["housingCooperative"] is not None
         and listing["housingCooperative"] != ""
     ):
-        listing["hasHousingCooperative"] = True
+        t_listing["hasHousingCooperative"] = True
     else:
-        listing["hasHousingCooperative"] = False
-    if "housingCooperative" in listing.keys():
-        del listing["housingCooperative"]
+        t_listing["hasHousingCooperative"] = False
 
     # Convert "housingForm" to a one-hot encoding
-    for name, one_hot_encoding in convert_housing_form_to_one_hot_encoding(
-        listing["housingForm"]
-    ).items():
-        listing[name] = one_hot_encoding
-    del listing["housingForm"]
+    for name, one_hot_encoding in housing_one_hot(listing["housingForm"]).items():
+        t_listing[name] = one_hot_encoding
 
     # Convert "constructionYear" to "age"
     year_now = datetime.datetime.now().year
-    listing["age"] = year_now - listing["constructionYear"]
-    del listing["constructionYear"]
+    t_listing["age"] = year_now - listing["constructionYear"]
 
     # Convert "renovationYear" to "sinceLastRenovation"
     if "renovationYear" in listing.keys():
-        listing["sinceLastRenovation"] = year_now - listing["renovationYear"]
-        del listing["renovationYear"]
+        t_listing["sinceLastRenovation"] = year_now - listing["renovationYear"]
     else:
-        listing["sinceLastRenovation"] = listing["age"]
+        t_listing["sinceLastRenovation"] = t_listing["age"]
 
-    # Convert "soldAt" to "soldYear" and "soldMonth"
-    listing["soldYear"] = listing["soldAt"].year
-    listing["soldMonth"] = listing["soldAt"].month
-    del listing["soldAt"]
+    # Convert "soldAt" to "yearsSinceSold" (represented as a float since we know the exact date)
+    t_listing["yearsSinceSold"] = (
+        datetime.datetime.now() - listing["soldAt"]
+    ).days / 365.25
 
-    # Remove "district", "municipality", "county" and "city", since we use coordinates instead
-    del listing["district"]
-    del listing["municipality"]
-    del listing["county"]
-    del listing["city"]
-
-    return listing
+    return t_listing
 
 
 if __name__ == "__main__":

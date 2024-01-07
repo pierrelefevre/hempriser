@@ -3,6 +3,7 @@ import os
 import json
 import datetime
 import pickle
+import db
 
 import pandas as pd
 import numpy as np
@@ -47,8 +48,9 @@ regressors = {
 # List of setups to use, each will result in a model that can be used for a specific purpose
 # "features" will be a list of features to use, every feature that is not here will be dropped
 setups = {
-    "bostadspriser-without-askingPrice": {
+    "bostadspriser-without-askingPrice-combine-cpi": {
         "features": [
+            "cpi",
             "fee",
             "livingArea",
             "rooms",
@@ -57,7 +59,6 @@ setups = {
             "hasBalcony",
             "lat",
             "long",
-            "cpi",
             "hasHousingCooperative",
             "isPlot",
             "isWinterLeisureHouse",
@@ -74,13 +75,13 @@ setups = {
             "isFarmWithAgriculture",
             "age",
             "sinceLastRenovation",
-            "soldYear",
-            "soldMonth",
+            "yearsSinceSold",
         ],
         "target": "finalPrice",
     },
-    "bostadspriser-with-askingPrice": {
+    "bostadspriser-with-askingPrice-combine-cpi": {
         "features": [
+            "cpi",
             "fee",
             "livingArea",
             "rooms",
@@ -89,7 +90,6 @@ setups = {
             "hasBalcony",
             "lat",
             "long",
-            "cpi",
             "hasHousingCooperative",
             "isPlot",
             "isWinterLeisureHouse",
@@ -106,8 +106,7 @@ setups = {
             "isFarmWithAgriculture",
             "age",
             "sinceLastRenovation",
-            "soldYear",
-            "soldMonth",
+            "yearsSinceSold",
             "askingPrice",
         ],
         "target": "finalPrice",
@@ -167,7 +166,6 @@ def evaluate_model(
     return gs_model, gs_model.best_params_, mse, rmse, r2
 
 
-# def train, takes in a test train split and returns the best model and its results
 def train(name, X_train, y_train, X_test, y_test):
     results = {}
     for regressor_name, regressor in regressors.items():
@@ -181,13 +179,21 @@ def train(name, X_train, y_train, X_test, y_test):
             X_test,
             y_test,
         )
-        results[regressor_name] = {"model": model, "bestParams": best_params, "mse": mse, "rmse": rmse, "r2": r2}
+        results[regressor_name] = {
+            "model": model,
+            "bestParams": best_params,
+            "mse": mse,
+            "rmse": rmse,
+            "r2": r2,
+        }
 
     return results
 
 
 def main():
-    print(f" --- Starting training for {len(setups)} setups {datetime.datetime.now().isoformat()} --- ")
+    print(
+        f" --- Starting training for {len(setups)} setups {datetime.datetime.now().isoformat()} --- "
+    )
     print("Loading data...")
     file_path = "../dataset/listings.parquet"
     data = pd.read_parquet(file_path)
@@ -199,13 +205,23 @@ def main():
     # Dropping NaN values will drop every row without coordinates
     data = data.dropna()
 
+    # Combine CPI with finalPrice and askingPrice
+    cpiNow = db.get_cpi(datetime.datetime.now())
+    if cpiNow is None:
+        print("Could not get CPI for now, exiting...")
+        exit()
+
+    # transform finalPrice and asking price to be finalPrice* (cpiNow/cpi) and askingPrice* (cpiNow/cpi)
+    data["finalPrice"] = data["finalPrice"] * (cpiNow / data["cpi"])
+    data["askingPrice"] = data["askingPrice"] * (cpiNow / data["cpi"])
+
     # Sort column names alphabetically to make it easier to use the model from the API later (it will also sort alphabetically)
     data = data.reindex(sorted(data.columns), axis=1)
 
     for name, setup in setups.items():
         # Allow multiple timed versions of the same model
         now = datetime.datetime.now()
-        name_with_date = name + "-" + now.strftime("%Y-%m-%d")
+        name_with_date = name + "-" + now.strftime("%Y-%m-%d-%H-%M")
 
         print(f"[{name}] Getting test train split...")
         X_train, X_test, y_train, y_test, scaler = get_test_train_split(
@@ -259,7 +275,7 @@ def main():
                 "mse": results[best_model]["mse"],
                 "rmse": results[best_model]["rmse"],
                 "r2": results[best_model]["r2"],
-            }
+            },
         }
         with open(f"{folder}/metadata.json", "w") as f:
             json.dump(metadata, f)

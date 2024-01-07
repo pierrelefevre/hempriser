@@ -1,0 +1,41 @@
+{
+  "name": "bostadspriser-without-askingPrice-combine-cpi",
+  "nameWithDate": "bostadspriser-without-askingPrice-combine-cpi-2024-01-07-14-33",
+  "features": [
+    "cpi",
+    "fee",
+    "livingArea",
+    "rooms",
+    "runningCosts",
+    "hasElevator",
+    "hasBalcony",
+    "lat",
+    "long",
+    "hasHousingCooperative",
+    "isPlot",
+    "isWinterLeisureHouse",
+    "isApartment",
+    "isFarmWithForest",
+    "isHouse",
+    "isRowHouse",
+    "isPairHouse",
+    "isPairTerracedRowHouse",
+    "isTerracedHouse",
+    "isFarmWithoutForest",
+    "isLeisureHouse",
+    "isOtherHousingForm",
+    "isFarmWithAgriculture",
+    "age",
+    "sinceLastRenovation",
+    "yearsSinceSold"
+  ],
+  "target": "finalPrice",
+  "trainedAt": "2024-01-07T14:33:46.302559",
+  "model": {
+    "name": "Gradient Boosting",
+    "params": { "max_depth": 10, "min_samples_split": 2, "n_estimators": 100 },
+    "mse": 755401645794.4132,
+    "rmse": 869138.4503026047,
+    "r2": 0.8906501225545782
+  }
+}

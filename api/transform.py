@@ -27,7 +27,7 @@ import pandas as pd
 #       - Gård med jordbruk
 # 4. Convert "constructionYear" to "age"
 # 5. Convert "renovationYear" to "sinceLastRenovation"
-# 6. Convert "soldAt" to "soldYear" and "soldMonth"
+# 6. Convert "soldAt" to "yearsSinceSold" (represented as a float since we know the exact date)
 
 allowed_housing_forms = [
     "Tomt",
@@ -129,9 +129,14 @@ def transform_params(params):
     # 5. Convert "renovationYear" to "sinceLastRenovation"
     t_params["sinceLastRenovation"] = year_now - params["renovationYear"]
 
-    # 6. Convert "soldAt" to "soldYear" and "soldMonth"
+    # 6. Convert "soldAt" to "yearsSinceSold" (represented as a float since we know the exact date) (keep soldYear and soldMonth for backwards compatibility)
     t_params["soldYear"] = params["soldAt"].year
     t_params["soldMonth"] = params["soldAt"].month
+    t_params["yearsSinceSold"] = float(
+        datetime.datetime.now() - params["soldAt"]
+    ).days / 365.25
+
+    #### Model specific transformations
 
     # Chose model depending on the parameters
     model, t_params = helpers.choose_model(t_params)

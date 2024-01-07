@@ -1,0 +1,43 @@
+{
+  "name": "bostadspriser-with-askingPrice",
+  "nameWithDate": "bostadspriser-with-askingPrice-2024-01-05-17-11",
+  "features": [
+    "fee",
+    "livingArea",
+    "rooms",
+    "runningCosts",
+    "hasElevator",
+    "hasBalcony",
+    "lat",
+    "long",
+    "cpi",
+    "hasHousingCooperative",
+    "isPlot",
+    "isWinterLeisureHouse",
+    "isApartment",
+    "isFarmWithForest",
+    "isHouse",
+    "isRowHouse",
+    "isPairHouse",
+    "isPairTerracedRowHouse",
+    "isTerracedHouse",
+    "isFarmWithoutForest",
+    "isLeisureHouse",
+    "isOtherHousingForm",
+    "isFarmWithAgriculture",
+    "age",
+    "sinceLastRenovation",
+    "soldYear",
+    "soldMonth",
+    "askingPrice"
+  ],
+  "target": "finalPrice",
+  "trainedAt": "2024-01-05T17:11:36.424882",
+  "model": {
+    "name": "Gradient Boosting",
+    "params": { "max_depth": 10, "min_samples_split": 5, "n_estimators": 100 },
+    "mse": 102988453569.09949,
+    "rmse": 320918.1415393955,
+    "r2": 0.9789828315822311
+  }
+}

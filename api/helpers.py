@@ -49,9 +49,21 @@ def choose_model(params):
 
         model = without_asking_price_models[-1]
 
+    # Transform the parms depending on the model chosen
     new_params = params.copy()
-    if "combine-cpi" in model["name"] and "cpi" in params.keys():
+
+    # 1. cpi is not in the "combine-cpi" models
+    ### However, after 2024-01-07:15:00:00, cpi should be present
+    if "combine-cpi" in model["name"] and "cpi" in params.keys() and model["metadata"]["trainedAt"] < "2024-01-07:15:00:00":
         del new_params["cpi"]
+
+    # 2. soldAt was parsed differently before
+    ### If model is trained earlier than 2024-01-07:15:00:00, remove "yearsSinceSold", otherwise remove "soldYear" and "soldMonth"
+    if model["metadata"]["trainedAt"] < "2024-01-07:15:00:00":
+        del new_params["yearsSinceSold"]
+    else:
+        del new_params["soldYear"]
+        del new_params["soldMonth"]
 
     return model, new_params
 

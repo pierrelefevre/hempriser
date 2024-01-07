@@ -75,3 +75,15 @@ def get_latest_inflation():
             return res
         else:
             now = now - datetime.timedelta(days=30)
+
+
+def get_cpi(date):
+    inflation = get_inflation(date.year, date.month)
+    if inflation is not None:
+        return float(inflation["cpiDecided"])
+
+    latest = get_latest_inflation()
+    if latest is None:
+        return None
+
+    return float(latest["cpiDecided"])
