@@ -27,8 +27,8 @@ def load_models():
         }
 
 
-def choose_model(transformed_params):
-    if "askingPrice" in transformed_params:
+def choose_model(params):
+    if "askingPrice" in params.keys():
         with_asking_price_models = []
         for name, model in models.items():
             if "with-askingPrice" in name:
@@ -37,7 +37,7 @@ def choose_model(transformed_params):
         # sort by trainedAt
         with_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
 
-        return with_asking_price_models[-1]
+        model = with_asking_price_models[-1]
     else:
         without_asking_price_models = []
         for name, model in models.items():
@@ -47,7 +47,13 @@ def choose_model(transformed_params):
         # sort by trainedAt
         without_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
 
-        return without_asking_price_models[-1]
+        model = without_asking_price_models[-1]
+
+    new_params = params.copy()
+    if "combine-cpi" in model["name"] and "cpi" in params.keys():
+        del new_params["cpi"]
+
+    return model, new_params
 
 
 def get_live_listing_prediction(url: str):
