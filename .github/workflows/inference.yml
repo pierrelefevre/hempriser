@@ -3,6 +3,7 @@ name: inference-cron
 on:
   schedule:
     - cron: "30 23 * * *"
+  workflow_dispatch:
 jobs:
   inference:
     runs-on: ubuntu-latest
