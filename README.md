@@ -111,6 +111,16 @@ We designed a test set of properties to be quite broad, yet we could not test su
 
 Most results were within 20% of the estimated price by Booli, however it is clear that the prices in Stockholm, Göteborg and Malmö are much more accurate than those outsite these larger cities.
 
+## Conclusion
+### Final words
+This project has been very insightful in the challenges that one might face when building a property price predictor. 
+We have all used prediction services like those from Booli and Hemnet, and it is easy to be stumped by their shortcomings, but after going through all the scraping and model training, we can appreciate how large of a task this is.
+By keeping this repository open-source, we hope to be able to help any future students wanting to use a property price dataset for Sweden.
 
-
-
+### Future work
+While we're happy with the result, there's always many improvment opportunities. Here are some of the improvements we would have done if we had more time:
+- Search by geocoded addresses
+- Show a confidence score (distance from closest listing, saturation of listings in the area) for each prediction
+- Include more parameters such as plot area, floors, solar panels
+- Feature "niceness" of listing using image classification
+- Get plot and living area size automatically from satellite images/GIS
