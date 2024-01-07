@@ -16,11 +16,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r inference/requirements.txt
+        pip install -r requirements.txt
+      working-directory: ./inference
     - name: Run inference
       env:
         MONGO_HOST: ${{ secrets.MONGO_HOST }}
         MONGO_SECRET: ${{ secrets.MONGO_SECRET }}
         MONGO_USER: ${{ secrets.MONGO_USER }}
       run: |
-        python inference/inference.py
+        python inference.py
+      working-directory: ./inference
