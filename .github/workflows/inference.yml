@@ -2,7 +2,7 @@ name: inference-cron
 # run once a day, at 23:30 UTC
 on:
   schedule:
-    - cron: "30 23 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 jobs:
   inference:
