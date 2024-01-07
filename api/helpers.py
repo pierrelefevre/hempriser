@@ -2,6 +2,8 @@ import os
 import pickle
 import json
 import db
+import requests
+import datetime
 
 import pandas as pd
 
@@ -26,9 +28,9 @@ def load_models():
             "metadata": metadata,
         }
 
+
 def choose_model(transformed_params):
     if "askingPrice" in transformed_params:
-
         with_asking_price_models = []
         for name, model in models.items():
             if "with-askingPrice" in name:
@@ -36,8 +38,8 @@ def choose_model(transformed_params):
 
         # sort by trainedAt
         with_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
-            
-        return with_asking_price_models[-1]    
+
+        return with_asking_price_models[-1]
     else:
         without_asking_price_models = []
         for name, model in models.items():
@@ -46,8 +48,13 @@ def choose_model(transformed_params):
 
         # sort by trainedAt
         without_asking_price_models.sort(key=lambda x: x["metadata"]["trainedAt"])
-            
+
         return without_asking_price_models[-1]
+
+
+def get_live_listing_prediction(url: str):
+    # Check if the listing is in the database, otherwise it is treated as a non-existent listing
+    return db.get_live_listing_by_url(url)
 
 
 def get_live_listings(page: int, page_size: int):

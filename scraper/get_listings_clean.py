@@ -14,7 +14,7 @@ swedish_to_english_months = {
     "september": "September",
     "oktober": "October",
     "november": "November",
-    "december": "December"
+    "december": "December",
 }
 
 
@@ -42,7 +42,9 @@ def clean_listing(listing_raw):
                 if value["type"] == "DISTRICT" and "districts" not in output:
                     output["district"] = int(value["id"])
 
-                if "city" not in output and (value["type"] == "CITY" or value["type"] == "POSTAL_CITY"):
+                if "city" not in output and (
+                    value["type"] == "CITY" or value["type"] == "POSTAL_CITY"
+                ):
                     output["city"] = int(value["id"])
 
                 if value["type"] == "COUNTRY":
@@ -74,7 +76,10 @@ def clean_listing(listing_raw):
                     output["rooms"] = 1
 
                 # format formattedSoldAt to datetime
-                if "formattedSoldAt" in value.keys() and value["formattedSoldAt"] is not None:
+                if (
+                    "formattedSoldAt" in value.keys()
+                    and value["formattedSoldAt"] is not None
+                ):
                     # Såld 09 juli 2021
                     splits = value["formattedSoldAt"].split(" ")
 
@@ -82,7 +87,8 @@ def clean_listing(listing_raw):
                     eng_date_str = f"{splits[1]} {swedish_to_english_months[splits[2]]} {splits[3]}"
 
                     output["soldAt"] = datetime.datetime.strptime(
-                        eng_date_str, "%d %B %Y")
+                        eng_date_str, "%d %B %Y"
+                    )
                 else:
                     raise Exception("Missing formattedSoldAt")
 
@@ -91,7 +97,10 @@ def clean_listing(listing_raw):
                 # not renovated: 1953
                 # renovated: 1953/2010
 
-                if "legacyConstructionYear" in value.keys() and value["legacyConstructionYear"] is not None:
+                if (
+                    "legacyConstructionYear" in value.keys()
+                    and value["legacyConstructionYear"] is not None
+                ):
                     try:
                         split = value["legacyConstructionYear"].split("/")
                         if len(split) == 1:
@@ -114,17 +123,21 @@ def clean_listing(listing_raw):
 
                 output["housingForm"] = value["housingForm"]["name"]
 
-                if "housingCooperative" in value.keys() and value["housingCooperative"] is not None:
+                if (
+                    "housingCooperative" in value.keys()
+                    and value["housingCooperative"] is not None
+                ):
                     # check if housingCooperative is a string or a dict
                     if isinstance(value["housingCooperative"], str):
                         output["housingCooperative"] = value["housingCooperative"]
                     else:
-                        output["housingCooperative"] = value["housingCooperative"]["name"]
+                        output["housingCooperative"] = value["housingCooperative"][
+                            "name"
+                        ]
 
                     # remove housing cooperative if it is an empty string
                     if output["housingCooperative"] == "":
                         del output["housingCooperative"]
-
 
                 # find all amenities
                 output["hasElevator"] = False
@@ -207,15 +220,20 @@ def clean_all():
                     db.mark_raw_listing_as_missing_fields(raw_listing["url"])
                     continue
 
-                print("Failed to clean listing (" +
-                      str(raw_listing["url"])+"), details: " + str(e))
+                print(
+                    "Failed to clean listing ("
+                    + str(raw_listing["url"])
+                    + "), details: "
+                    + str(e)
+                )
                 db.mark_raw_listing_as_failed(raw_listing["url"])
                 continue
         db.write_listings(cleaned)
         db.mark_raw_listings_as_done([listing["url"] for listing in cleaned])
 
         print(
-            f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields.")
+            f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields."
+        )
 
 
 def clean_mock():

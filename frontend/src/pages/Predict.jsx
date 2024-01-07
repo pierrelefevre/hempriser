@@ -44,8 +44,8 @@ const Predict = () => {
 
   const generateRandomState = () => {
     let randomState = {
-      latitude: "59.3361328",
-      longitude: "18.0726201",
+      latitude: state.latitude,
+      longitude: state.longitude,
       fee: Math.floor(Math.random() * 6000).toString(),
       livingArea: Math.floor(50 + Math.random() * 20).toString(),
       rooms: Math.floor(2 + Math.random() * 3).toString(),
@@ -118,6 +118,15 @@ const Predict = () => {
   }, [state, askingPrice]);
 
   useEffect(() => {
+    let latitude = "59.3361328";
+    let longitude = "18.0726201";
+
+    setState({
+      ...state,
+      latitude: latitude,
+      longitude: longitude,
+    });
+
     generateRandomState();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

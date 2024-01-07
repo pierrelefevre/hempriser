@@ -56,6 +56,11 @@ def get_live_listings(page: int, page_size: int):
     return list(live_listings)
 
 
+def get_live_listing_by_url(url: str):
+    live_listing = c["listings-live-clean"].find_one({"url": url}, {"_id": 0})
+    return live_listing
+
+
 def get_inflation(year: int, month: int):
     if month < 10:
         key = f"{year}M0{month}"

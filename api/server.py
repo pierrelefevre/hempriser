@@ -66,6 +66,21 @@ def get_listings():
 def predict():
     body = flask.request.json
 
+    if body is None:
+        return flask.jsonify({"error": "No json body"}), 400
+
+    if "url" in body:
+        url = body["url"]
+
+        if "hemnet.se" not in url:
+            return flask.jsonify({"error": "Invalid url"}), 400
+
+        listing = helpers.get_live_listing_prediction(url)
+        if listing is None:
+            return flask.jsonify({"error": "Not found"}), 404
+
+        return flask.jsonify(listing)
+
     # Make sure all required parameters are present using cerberus
     schema = {
         "housingForm": {
@@ -76,7 +91,6 @@ def predict():
         "rooms": {"type": "number", "min": 0},
         "constructionYear": {"type": "number", "min": 0},
         "renovationYear": {"type": "number", "min": 0},
-        "askingPrice": {"type": "number", "min": 0},
         "fee": {"type": "number", "min": 0},
         "runningCosts": {"type": "number", "min": 0},
         "hasElevator": {"type": "boolean"},
@@ -99,29 +113,16 @@ def predict():
     except Exception as e:
         return flask.jsonify({"error": str(e)}), 400
 
+    params = body
+
     # Transform the parameters to the format used in the model'
     try:
-        transformed_params = transform.transform_params(body)
+        transformed_params, model = transform.transform_params(params)
     except Exception as e:
         return flask.jsonify({"error": str(e)}), 400
 
-    # Chose model depending on the parameters
-    model = helpers.choose_model(transformed_params.keys())
-
-    # Convert to df and sort alphabetically
-    transformed_params_df = pd.DataFrame([transformed_params])
-    transformed_params_df = transformed_params_df.reindex(
-        sorted(transformed_params_df.columns), axis=1
-    )
-
-    # Scale the data
-    transformed_params = model["scaler"].transform(transformed_params_df)
-
-    # Extract the values
-    transformed_params_values = transformed_params[0]
-
     # Predict
-    prediction = model["model"].predict([transformed_params_values])
+    prediction = model["model"].predict([transformed_params])
     return flask.jsonify(
         {
             "prediction": prediction[0],

@@ -13,7 +13,7 @@ export const ResourceContextProvider = ({ children }) => {
   const [listings, setListings] = useState([]);
   const [models, setModels] = useState([]);
   const [page, setPage] = useState(0);
-  const n = 50;
+  const n = 10;
 
   const fetchListings = async () => {
     let data = await getListings(page, n);

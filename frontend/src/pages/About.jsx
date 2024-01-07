@@ -7,13 +7,52 @@ import {
   CardHeader,
   Chip,
   Divider,
+  Paper,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import useResource from "../hooks/useResource";
+import { LineChart } from "@mui/x-charts/LineChart";
+import { useEffect, useState } from "react";
+import Iconify from "../components/Iconify";
 
 const About = () => {
   const { models } = useResource();
+  const [dataset, setDataset] = useState([]);
+
+  useEffect(() => {
+    if (!models) return;
+
+    let data = [];
+    models.forEach((model) => {
+      if (
+        !(
+          model.metadata &&
+          model.metadata.model &&
+          model.metadata.model.r2 &&
+          model.metadata.model.rmse &&
+          model.metadata.model.mse
+        )
+      )
+        return;
+
+      let unixTime = new Date(model.metadata.trainedAt);
+      data.push({
+        timestamp: unixTime,
+        r2: model.metadata.model.r2,
+        mse: model.metadata.model.mse,
+        rmse: model.metadata.model.rmse,
+      });
+    });
+
+    setDataset(data);
+  }, [models]);
 
   return (
     <Stack spacing={5}>
@@ -42,38 +81,56 @@ const About = () => {
                     {"Target: " + model.metadata.target}
                   </Typography>
                   <Divider sx={{ my: 2 }} />
-                  <Typography gutterBottom>Results</Typography>
-                  {Object.keys(model.results).map(
-                    (modelType, modelTypeIndex) => (
-                      <Stack
-                        spacing={2}
-                        direction={"row"}
-                        flexWrap={"wrap"}
-                        useFlexGap
-                        alignItems={"center"}
-                        justifyContent={"flex-start"}
-                        key={modelTypeIndex}
-                      >
-                        <Chip
-                          label={modelType}
-                          key={"modelType-" + modelTypeIndex}
-                          color="primary"
-                        />
-                        {Object.keys(model.results[modelType]).map(
-                          (resultType, resultTypeIndex) => (
-                            <Chip
-                              label={
-                                resultType +
-                                ": " +
-                                model.results[modelType][resultType]
+                  <Typography gutterBottom>Training results</Typography>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Model Type</TableCell>
+                          <TableCell>MSE</TableCell>
+                          <TableCell>RMSE</TableCell>
+                          <TableCell>R2</TableCell>
+                          <TableCell>Best</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {Object.keys(model.results).map(
+                          (modelType, modelTypeIndex) => (
+                            <TableRow
+                              key={modelTypeIndex + "row"}
+                              sx={
+                                modelTypeIndex === 0
+                                  ? {
+                                      background: "#f0f0f0",
+                                    }
+                                  : null
                               }
-                              key={"feature-" + resultTypeIndex}
-                            />
+                            >
+                              <TableCell>{modelType}</TableCell>
+                              <TableCell>
+                                {model.results[modelType].mse}
+                              </TableCell>
+                              <TableCell>
+                                {model.results[modelType].rmse}
+                              </TableCell>
+                              <TableCell>
+                                {model.results[modelType].r2}
+                              </TableCell>
+                              <TableCell>
+                                <Iconify
+                                  icon={
+                                    modelTypeIndex === 0
+                                      ? "mdi:check"
+                                      : "mdi:close"
+                                  }
+                                />
+                              </TableCell>
+                            </TableRow>
                           )
                         )}
-                      </Stack>
-                    )
-                  )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
 
                   <Divider sx={{ my: 2 }} />
                   <Typography gutterBottom>Features</Typography>
@@ -86,13 +143,44 @@ const About = () => {
                     justifyContent={"flex-start"}
                   >
                     {model.metadata.features.map((feature, featureIndex) => (
-                      <Chip label={feature} key={"feature-" + featureIndex} />
+                      <Chip
+                        label={feature}
+                        key={"feature-" + featureIndex}
+                        color={
+                          feature === "askingPrice" ? "primary" : "default"
+                        }
+                      />
                     ))}
                   </Stack>
                 </AccordionDetails>
               </Accordion>
             ))}
           </Stack>
+        </CardContent>
+      </Card>
+      <Card
+        sx={{
+          border: 2,
+          borderColor: "#018e51",
+          borderRadius: 2,
+          boxShadow: 5,
+          p: 3,
+        }}
+      >
+        <CardHeader title="Model performance" />
+        <CardContent>
+          <LineChart
+            dataset={dataset}
+            xAxis={[{ dataKey: "timestamp", scaleType: "time" }]}
+            series={[
+              { dataKey: "r2", label: "R2" },
+              { dataKey: "mse", label: "MSE" },
+              { dataKey: "rmse", label: "RMSE" },
+            ]}
+            width={600}
+            height={300}
+            yAxis={[{ scaleType: "log" }]}
+          />
         </CardContent>
       </Card>
       <Card
