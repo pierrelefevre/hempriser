@@ -61,6 +61,9 @@ def get_listings():
 
     return helpers.get_live_listings(skip, limit)
 
+@app.route("/predictions", methods=["GET"])
+def get_predictions():
+    return flask.jsonify(helpers.get_prediction_results())
 
 @app.route("/predict", methods=["POST"])
 def predict():

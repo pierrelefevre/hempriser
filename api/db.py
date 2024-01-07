@@ -40,10 +40,15 @@ def setup():
     c["listings-live-clean"] = db["listings-live-clean"]
     c["listings"] = db["listings"]
     c["inflation"] = db["inflation"]
+    c["predictions"] = db["predictions"]
 
 
 setup()
 
+
+def get_predictions():
+    predictions = c["predictions"].find({}, {"_id": 0})
+    return list(predictions)
 
 def get_live_listings(page: int, page_size: int):
     live_listings = (

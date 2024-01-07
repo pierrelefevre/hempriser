@@ -98,19 +98,15 @@ def main():
 
     print("Calculating rmse and r2...")
     rmse = 0
-    r2 = 0
 
     for i in range(len(predictions)):
         rmse += (predictions[i]["prediction"] - predictions[i]["label"]) ** 2
-        r2 += predictions[i]["prediction"] ** 2
 
     rmse = (rmse / len(predictions)) ** 0.5
-    r2 = r2 / len(predictions)
 
     print("=== Results ===")
     print("Predictions:", len(predictions))
     print("RMSE:", rmse)
-    print("R2:", r2)
     print("===============")
 
     print("Writing predictions to db...")

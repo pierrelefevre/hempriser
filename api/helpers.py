@@ -68,6 +68,57 @@ def choose_model(params):
     return model, new_params
 
 
+def get_prediction_results():
+    predictions = db.get_predictions()
+
+    # Group per day
+    predictions_per_day = {}
+    for prediction in predictions:
+        date = prediction["createdAt"].replace(hour=0, minute=0, second=0, microsecond=0)
+        if date not in predictions_per_day:
+            predictions_per_day[date] = []
+
+        predictions_per_day[date].append(prediction)
+
+    # Calculate RMSE and R2 per day
+    results_per_day = {}
+    for date, predictions in predictions_per_day.items():
+        rmse = 0
+        for prediction in predictions:
+            rmse += (prediction["prediction"] - prediction["label"]) ** 2
+
+        rmse = (rmse / len(predictions)) ** 0.5
+
+        results_per_day[date] = {
+            "rmse": rmse,
+            "createdAt": date,
+        }
+
+    # Convert to x and y lists
+    rmse_x = []
+    rmse_y = []
+
+    for results in results_per_day.values():
+        rmse_x.append(results["createdAt"].isoformat())
+        rmse_y.append(results["rmse"])
+
+    predictions_x = []
+    predictions_y = []
+    labels_x = []
+    labels_y = []
+
+    for prediction in predictions:
+        predictions_x.append(prediction["createdAt"].isoformat())
+        predictions_y.append(prediction["prediction"])
+        labels_x.append(prediction["createdAt"].isoformat())
+        labels_y.append(prediction["label"])
+
+    return {
+        "rmse": {"x": rmse_x, "y": rmse_y},
+        "predictions": {"x": predictions_x, "y": predictions_y},
+        "labels": {"x": labels_x, "y": labels_y},
+    }
+
 def get_live_listing_prediction(url: str):
     # Check if the listing is in the database, otherwise it is treated as a non-existent listing
     return db.get_live_listing_by_url(url)
