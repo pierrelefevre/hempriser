@@ -45,22 +45,32 @@ def setup():
 setup()
 
 
-def get_sold_non_predicted_listings_today():
-    today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+def get_sold_non_predicted_listings_after(after: datetime.datetime):
     sold_listings = c["listings"].find(
-        {"createdAt": {"$gte": today}, "predicted": {"$in": [False, None]}, "lat": {"$exists": True}, "long": {"$exists": True}},
-        {"_id": 0}
-        )
+        {
+            "createdAt": {"$gte": after},
+            "predicted": {"$in": [False, None]},
+            "lat": {"$exists": True},
+            "long": {"$exists": True},
+        },
+        {"_id": 0},
+    )
 
     return list(sold_listings)
 
 
-def write_prediction(url, prediction, label):
+def write_prediction(url, listing_created_at, prediction, label):
     c["predictions"].insert_one(
-        {"prediction": prediction, "label": label, "createdAt": datetime.datetime.now()}
+        {
+            "prediction": prediction,
+            "label": label,
+            "createdAt": datetime.datetime.now(),
+            "listingCreatedAt": listing_created_at,
+        },
     )
 
     c["listings"].update_one({"url": url}, {"$set": {"predicted": True}})
+
 
 def get_inflation(year: int, month: int):
     if month < 10:
@@ -70,6 +80,7 @@ def get_inflation(year: int, month: int):
 
     res = c["inflation"].find_one({"id": key})
     return res
+
 
 def get_latest_inflation():
     now = datetime.datetime.now()

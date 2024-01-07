@@ -4,6 +4,7 @@ import transform
 import pandas as pd
 import json
 import sys
+import datetime
 
 model_name = "bostadspriser-without-askingPrice-combine-cpi-2024-01-07-14-33"
 
@@ -57,15 +58,17 @@ def main():
 
     print("Fetching todays listings from db...", end="")
     sys.stdout.flush()
-    todays_listings = db.get_sold_non_predicted_listings_today()
-    if len(todays_listings) == 0:
+
+    after = model["metadata"]["trainedAt"]
+    listings = db.get_sold_non_predicted_listings_after(after)    
+    if len(listings) == 0:
         print(" No listings found")
         exit()
-    print(f" {len(todays_listings)} listings found")
+    print(f" {len(listings)} listings found")
 
     print("Transforming todays listings...")
     t_todays_listings = []
-    for listing in todays_listings:
+    for listing in listings:
         t_listing = transform.transform_listing(listing)
         if t_listing is not None:
             t_todays_listings.append(model_specific_transform(model, t_listing))
@@ -88,9 +91,12 @@ def main():
     predictions = []
     for i in range(len(scaled_listings)):
         prediction = predict(model, scaled_listings[i])
+        import random
         predictions.append(
             {
-                "url": todays_listings[i]["url"],
+                "url": listings[i]["url"],
+                "listingCreatedAt": datetime.datetime.now() - datetime.timedelta(seconds=random.random() * 172 * 60 * 60),
+
                 "prediction": prediction[0],
                 "label": int(df_label[i]),
             }
@@ -112,7 +118,7 @@ def main():
     print("Writing predictions to db...")
     for prediction in predictions:
         db.write_prediction(
-            prediction["url"], prediction["prediction"], prediction["label"]
+            prediction["url"],prediction["listingCreatedAt"], prediction["prediction"], prediction["label"]
         )
 
     print("=== Done ===")
