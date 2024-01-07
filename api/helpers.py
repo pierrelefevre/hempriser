@@ -70,6 +70,7 @@ def choose_model(params):
 
 def get_prediction_results():
     predictions = db.get_predictions()
+    predictions.sort(key=lambda x: x["listingCreatedAt"])
 
     # Group per day
     predictions_per_day = {}
@@ -82,12 +83,12 @@ def get_prediction_results():
 
     # Calculate RMSE and R2 per day
     results_per_day = {}
-    for date, predictions in predictions_per_day.items():
+    for date, day_predictions in predictions_per_day.items():
         rmse = 0
-        for prediction in predictions:
+        for prediction in day_predictions:
             rmse += (prediction["prediction"] - prediction["label"]) ** 2
 
-        rmse = (rmse / len(predictions)) ** 0.5
+        rmse = (rmse / len(day_predictions)) ** 0.5
 
         results_per_day[date] = {
             "rmse": rmse,
@@ -108,10 +109,12 @@ def get_prediction_results():
     labels_y = []
 
     for prediction in predictions:
-        predictions_x.append(prediction["createdAt"].isoformat())
+        predictions_x.append(prediction["listingCreatedAt"].isoformat())
         predictions_y.append(prediction["prediction"])
-        labels_x.append(prediction["createdAt"].isoformat())
+        labels_x.append(prediction["listingCreatedAt"].isoformat())
         labels_y.append(prediction["label"])
+
+    print(len(predictions))
 
     return {
         "rmse": {"x": rmse_x, "y": rmse_y},
