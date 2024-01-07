@@ -74,7 +74,7 @@ def get_prediction_results():
     # Group per day
     predictions_per_day = {}
     for prediction in predictions:
-        date = prediction["createdAt"].replace(hour=0, minute=0, second=0, microsecond=0)
+        date = prediction["listingCreatedAt"].replace(hour=0, minute=0, second=0, microsecond=0)
         if date not in predictions_per_day:
             predictions_per_day[date] = []
 
