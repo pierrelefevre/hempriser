@@ -80,6 +80,9 @@ def predict():
             return flask.jsonify({"error": "Not found"}), 404
 
         return flask.jsonify(listing)
+    
+    # remove None values
+    body = {k: v for k, v in body.items() if v is not None}
 
     # Make sure all required parameters are present using cerberus
     schema = {

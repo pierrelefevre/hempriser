@@ -128,13 +128,10 @@ def transform_params(params):
 
     # 5. Convert "renovationYear" to "sinceLastRenovation"
     t_params["sinceLastRenovation"] = year_now - params["renovationYear"]
-
     # 6. Convert "soldAt" to "yearsSinceSold" (represented as a float since we know the exact date) (keep soldYear and soldMonth for backwards compatibility)
     t_params["soldYear"] = params["soldAt"].year
     t_params["soldMonth"] = params["soldAt"].month
-    t_params["yearsSinceSold"] = float(
-        datetime.datetime.now() - params["soldAt"]
-    ).days / 365.25
+    t_params["yearsSinceSold"] = 0.0
 
     #### Model specific transformations
 
