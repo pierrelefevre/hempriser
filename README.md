@@ -96,3 +96,31 @@ The code for the website is in the `frontend` and `api` folders. The code is wri
 ### Transparency
 We aimed for transparency in the model, which is why we included a page presenting all the features user in the model, as well as the model type (such as linear regression or random forest regression) and the hyperparameters used for that model.
 
+## Results
+### Model evaluation pipeline
+To ensure we monitor for model drift and inference skew, we designed a model evaluation pipeline.
+The issue is - what data should we test with, since all of the sold listings have been used in some effect (train/test/validate)? 
+Since the idea is to run this pipeline once a day, we can simply use the listings that were sold in the last 24 hours, which the model has not been trained on yet.
+
+
+### Comparison against Booli
+![image](https://github.com/pierrelefevre/bostadspriser/assets/35996839/ff3872ce-c5ea-445a-8111-c04341d2099d)
+
+As a good sanity check, we wanted to compare to an established source of property price predictions in Sweden. Booli has a [free tool](https://www.booli.se/vardera) for predicting prices with most parameters overlapping ours. 
+We designed a test set of properties to be quite broad, yet we could not test summer houses, plots nor farms as these are not supported by Booli. 
+
+Most results were within 20% of the estimated price by Booli, however it is clear that the prices in Stockholm, Göteborg and Malmö are much more accurate than those outsite these larger cities.
+
+## Conclusion
+### Final words
+This project has been very insightful in the challenges that one might face when building a property price predictor. 
+We have all used prediction services like those from Booli and Hemnet, and it is easy to be stumped by their shortcomings, but after going through all the scraping and model training, we can appreciate how large of a task this is.
+By keeping this repository open-source, we hope to be able to help any future students wanting to use a property price dataset for Sweden.
+
+### Future work
+While we're happy with the result, there's always many improvment opportunities. Here are some of the improvements we would have done if we had more time:
+- Search by geocoded addresses
+- Show a confidence score (distance from closest listing, saturation of listings in the area) for each prediction
+- Include more parameters such as plot area, floors, solar panels
+- Feature "niceness" of listing using image classification
+- Get plot and living area size automatically from satellite images/GIS
