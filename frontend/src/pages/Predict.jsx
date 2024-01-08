@@ -185,12 +185,15 @@ const Predict = () => {
                         label="Latitude"
                         variant="standard"
                         value={state.latitude}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          if (isNaN(parseFloat(e.target.value))) {
+                            return;
+                          }
                           setState({
                             ...state,
                             latitude: parseFloat(e.target.value),
-                          })
-                        }
+                          });
+                        }}
                       />
                     </Grid>
 
@@ -199,12 +202,15 @@ const Predict = () => {
                         label="Longitude"
                         variant="standard"
                         value={state.longitude}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          if (isNaN(parseFloat(e.target.value))) {
+                            return;
+                          }
                           setState({
                             ...state,
                             longitude: parseFloat(e.target.value),
-                          })
-                        }
+                          });
+                        }}
                       />
                     </Grid>
                   </Grid>
