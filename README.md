@@ -118,7 +118,7 @@ We have all used prediction services like those from Booli and Hemnet, and it is
 By keeping this repository open-source, we hope to be able to help any future students wanting to use a property price dataset for Sweden.
 
 ### Future work
-While we're happy with the result, there's always many improvment opportunities. Here are some of the improvements we would have done if we had more time:
+While we're happy with the result, there's always many improvment opportunities. Here are some of the improvements we wanted to explore:
 - Search by geocoded addresses
 - Show a confidence score (distance from closest listing, saturation of listings in the area) for each prediction
 - Include more parameters such as plot area, floors, solar panels
