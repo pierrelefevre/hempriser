@@ -50,6 +50,7 @@ def get_predictions():
     predictions = c["predictions"].find({}, {"_id": 0})
     return list(predictions)
 
+
 def get_live_listings(page: int, page_size: int):
     live_listings = (
         c["listings-live-clean"]
