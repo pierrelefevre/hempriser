@@ -98,10 +98,10 @@ We aimed for transparency in the model, which is why we included a page presenti
 
 ## Results
 ### Model evaluation pipeline
-To ensure we monitor for model drift and inference skew, we designed a model evaluation pipeline.
-The issue is - what data should we test with, since all of the sold listings have been used in some effect (train/test/validate)? 
-Since the idea is to run this pipeline once a day, we can simply use the listings that were sold in the last 24 hours, which the model has not been trained on yet.
+To ensure we monitor for model drift and inference skew, we designed a batch inference pipeline that runs every hour. This pipeline takes all the sold listings since the model was trained that has not already been in a batch inference, and runs them through the model. The results are then stored in the database. Running it every hours means that, in practice, the batches are quite small (apart from the first one if the pipelilne is "shut down" for a while).
+By ensuring that we only select the listings with injection time after the model was trained, we can ensure that we are not testing the model on data it has already seen.
 
+The code for the batch inference pipeline is in the `inference` folder. The code is written in Python and can be run on any computer with systemd and Python 3 installed.
 
 ### Comparison against Booli
 ![image](https://github.com/pierrelefevre/bostadspriser/assets/35996839/ff3872ce-c5ea-445a-8111-c04341d2099d)
@@ -109,7 +109,7 @@ Since the idea is to run this pipeline once a day, we can simply use the listing
 As a good sanity check, we wanted to compare to an established source of property price predictions in Sweden. Booli has a [free tool](https://www.booli.se/vardera) for predicting prices with most parameters overlapping ours. 
 We designed a test set of properties to be quite broad, yet we could not test summer houses, plots nor farms as these are not supported by Booli. 
 
-Most results were within 20% of the estimated price by Booli, however it is clear that the prices in Stockholm, Göteborg and Malmö are much more accurate than those outsite these larger cities.
+Most results were within 20% of the estimated price by Booli, however it is clear that the prices in Stockholm, Göteborg and Malmö are much more accurate than those outsite these larger cities. This is likely due to the fact that Booli (probably) has more data for these areas, which means that if we are close to Booli's predictions wherever we have enough data to train a model, we are likely to have built a robust model.
 
 ## Conclusion
 ### Final words

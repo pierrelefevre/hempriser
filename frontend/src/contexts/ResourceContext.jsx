@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from "react";
-import { getListings, getModels } from "../api/api";
+import { getCronPredictions, getListings, getModels } from "../api/api";
 
 const initialState = {
   listings: [],
@@ -12,6 +12,7 @@ export const ResourceContext = createContext({
 export const ResourceContextProvider = ({ children }) => {
   const [listings, setListings] = useState([]);
   const [models, setModels] = useState([]);
+  const [cronPredictions, setCronPredictions] = useState([]);
   const [page, setPage] = useState(0);
   const n = 10;
 
@@ -28,6 +29,11 @@ export const ResourceContextProvider = ({ children }) => {
     setModels(data);
   };
 
+  const fetchCronPredictions = async () => {
+    let data = await getCronPredictions();
+    setCronPredictions(data);
+  };
+
   const nextPage = () => {
     setPage(page + 1);
     fetchListings();
@@ -36,6 +42,7 @@ export const ResourceContextProvider = ({ children }) => {
   useEffect(() => {
     fetchListings();
     fetchModels();
+    fetchCronPredictions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,6 +51,7 @@ export const ResourceContextProvider = ({ children }) => {
       value={{
         listings,
         models,
+        cronPredictions,
         nextPage,
       }}
     >

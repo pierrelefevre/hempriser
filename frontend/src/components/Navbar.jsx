@@ -1,4 +1,5 @@
 import {
+  Alert,
   AppBar,
   Button,
   IconButton,
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 import Iconify from "./Iconify";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { api_url } from "../api/api";
 
 const Navbar = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -59,6 +61,12 @@ const Navbar = () => {
         >
           Bostadspriser
         </Typography>
+
+        {api_url.includes("localhost") && (
+          <Alert severity="error" sx={{ mr: 1 }}>
+            Using localhost API!
+          </Alert>
+        )}
 
         <Tabs value={currentTab}>
           <Tab

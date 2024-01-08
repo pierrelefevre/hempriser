@@ -53,12 +53,16 @@ def choose_model(params):
     new_params = params.copy()
 
     # 1. cpi is not in the "combine-cpi" models
-    ### However, after 2024-01-07:14:00:00, cpi should be present
-    if "combine-cpi" in model["name"] and "cpi" in params.keys() and model["metadata"]["trainedAt"] < "2024-01-07:14:00:00":
+    # However, after 2024-01-07:14:00:00, cpi should be present
+    if (
+        "combine-cpi" in model["name"]
+        and "cpi" in params.keys()
+        and model["metadata"]["trainedAt"] < "2024-01-07:14:00:00"
+    ):
         del new_params["cpi"]
 
     # 2. soldAt was parsed differently before
-    ### If model is trained earlier than 2024-01-07:14:00:00, remove "yearsSinceSold", otherwise remove "soldYear" and "soldMonth"
+    # If model is trained earlier than 2024-01-07:14:00:00, remove "yearsSinceSold", otherwise remove "soldYear" and "soldMonth"
     if model["metadata"]["trainedAt"] < "2024-01-07:14:00:00":
         del new_params["yearsSinceSold"]
     else:
@@ -75,7 +79,9 @@ def get_prediction_results():
     # Group per day
     predictions_per_day = {}
     for prediction in predictions:
-        date = prediction["listingCreatedAt"].replace(hour=0, minute=0, second=0, microsecond=0)
+        date = prediction["listingCreatedAt"].replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         if date not in predictions_per_day:
             predictions_per_day[date] = []
 
@@ -103,24 +109,28 @@ def get_prediction_results():
         rmse_x.append(results["createdAt"].isoformat())
         rmse_y.append(results["rmse"])
 
-    predictions_x = []
-    predictions_y = []
-    labels_x = []
-    labels_y = []
+    prediction_diff_x = []
+    prediction_diff_y = []
+    prediction_diff_precent_y = []
 
     for prediction in predictions:
-        predictions_x.append(prediction["listingCreatedAt"].isoformat())
-        predictions_y.append(prediction["prediction"])
-        labels_x.append(prediction["listingCreatedAt"].isoformat())
-        labels_y.append(prediction["label"])
+        prediction_diff_x.append(prediction["listingCreatedAt"].isoformat())
+        prediction_diff_y.append(prediction["prediction"] - prediction["label"])
+        prediction_diff_precent_y.append(
+            (prediction["prediction"] - prediction["label"]) / prediction["label"]
+        )
 
     print(len(predictions))
 
     return {
         "rmse": {"x": rmse_x, "y": rmse_y},
-        "predictions": {"x": predictions_x, "y": predictions_y},
-        "labels": {"x": labels_x, "y": labels_y},
+        "predictions": {
+            "x": prediction_diff_x,
+            "y": prediction_diff_y,
+            "yPercent": prediction_diff_precent_y,
+        },
     }
+
 
 def get_live_listing_prediction(url: str):
     # Check if the listing is in the database, otherwise it is treated as a non-existent listing

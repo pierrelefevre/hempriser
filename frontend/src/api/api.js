@@ -1,5 +1,5 @@
-const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
-// const api_url = "http://localhost:8080";
+export const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
+// export const api_url = "http://localhost:8080";
 
 export const getListings = async (page, pageSize) => {
   if (page === undefined) {
@@ -53,4 +53,11 @@ export const predictWithHemnetURL = async (url) => {
   }
 
   return response.json();
-}
+};
+
+export const getCronPredictions = async () => {
+  const response = await fetch(api_url + "/predictions");
+  const data = await response.json();
+
+  return data;
+};
