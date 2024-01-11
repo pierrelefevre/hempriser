@@ -87,7 +87,7 @@ The training happens in our `model` pipeline, which can be run on a schedule. Th
 
 ## Using the model
 
-We created a website and a REST API to demonstrate the model. The website is available at [b.åt.se](https://b.xn--t-1fa.se/) and the API is available at [a.b.åt.se](https://a.b.xn--t-1fa.se/).
+We created a website and a REST API to demonstrate the model. The website is available at [hempriser.se](https://hempriser.se/) and the API is available at [api.hempriser.se](https://api.hempriser.se/).
 
 The website allows the user to see the predictions of a list of live and active property listings from Hemnet. The user can also input a custom property listing and see the prediction for that property, which is useful for users interested in selling their property.
 
