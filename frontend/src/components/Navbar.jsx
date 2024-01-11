@@ -59,7 +59,7 @@ const Navbar = () => {
           to="/"
           color="inherit"
         >
-          Bostadspriser
+          Hempriser
         </Typography>
 
         {api_url.includes("localhost") && (
