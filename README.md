@@ -1,19 +1,19 @@
-# 🏠️ bostadspriser
+# 🏠️ hempriser
 
 <img src="assets/splash.png" width="400px"/>
 
 Property price scraper and predictor from Hemnet
 
 
-![GitHub kthcloud ci status](https://img.shields.io/github/actions/workflow/status/pierrelefevre/bostadspriser/frontend.yml?label=frontend%20build)
-![GitHub kthcloud ci status](https://img.shields.io/github/actions/workflow/status/pierrelefevre/bostadspriser/api.yml?label=api%20build)
-![GitHub](https://img.shields.io/github/license/pierrelefevre/bostadspriser)
-![GitHub last commit](https://img.shields.io/github/last-commit/pierrelefevre/bostadspriser)
-![GitHub repo size](https://img.shields.io/github/repo-size/pierrelefevre/bostadspriser)
-![GitHub issues](https://img.shields.io/github/issues/pierrelefevre/bostadspriser)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/pierrelefevre/bostadspriser)
-![GitHub language count](https://img.shields.io/github/languages/count/pierrelefevre/bostadspriser)
-![GitHub top language](https://img.shields.io/github/languages/top/pierrelefevre/bostadspriser)
+![GitHub kthcloud ci status](https://img.shields.io/github/actions/workflow/status/pierrelefevre/hempriser/frontend.yml?label=frontend%20build)
+![GitHub kthcloud ci status](https://img.shields.io/github/actions/workflow/status/pierrelefevre/hempriser/api.yml?label=api%20build)
+![GitHub](https://img.shields.io/github/license/pierrelefevre/hempriser)
+![GitHub last commit](https://img.shields.io/github/last-commit/pierrelefevre/hempriser)
+![GitHub repo size](https://img.shields.io/github/repo-size/pierrelefevre/hempriser)
+![GitHub issues](https://img.shields.io/github/issues/pierrelefevre/hempriser)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/pierrelefevre/hempriser)
+![GitHub language count](https://img.shields.io/github/languages/count/pierrelefevre/hempriser)
+![GitHub top language](https://img.shields.io/github/languages/top/pierrelefevre/hempriser)
 
 A project by [Emil Karlsson](mailto:emilk2@kth.se) and [Pierre Le Fevre](mailto:pierrelf@kth.se), in the scope of ID2223 Scalable Machine Learning and Deep Learning at KTH.
 
@@ -104,7 +104,7 @@ By ensuring that we only select the listings with injection time after the model
 The code for the batch inference pipeline is in the `inference` folder. The code is written in Python and can be run on any computer with systemd and Python 3 installed.
 
 ### Comparison against Booli
-![image](https://github.com/pierrelefevre/bostadspriser/assets/35996839/ff3872ce-c5ea-445a-8111-c04341d2099d)
+![image](https://github.com/pierrelefevre/hempriser/assets/35996839/ff3872ce-c5ea-445a-8111-c04341d2099d)
 
 As a good sanity check, we wanted to compare to an established source of property price predictions in Sweden. Booli has a [free tool](https://www.booli.se/vardera) for predicting prices with most parameters overlapping ours. 
 We designed a test set of properties to be quite broad, yet we could not test summer houses, plots nor farms as these are not supported by Booli. 
