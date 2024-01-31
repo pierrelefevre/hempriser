@@ -39,13 +39,18 @@ def setup():
 
     global c
     c["listings"] = db["listings"]
+    c["listings"].create_index("id", unique=True)
+    c["listings"].create_index("url", unique=True)
+
     c["inflation"] = db["inflation"]
+    c["inflation"].create_index("id", unique=True)
 
 
 setup()
 
 # Read
-    
+
+
 def get_listings(n: int = 0, page: int = 0):
     res = (
         c["listings"]
@@ -54,6 +59,7 @@ def get_listings(n: int = 0, page: int = 0):
         .limit(n)
     )
     return list(res)
+
 
 def get_inflation(year: int, month: int):
     if month < 10:

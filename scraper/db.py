@@ -41,14 +41,39 @@ def setup():
 
     global c
     c["listings-raw"] = db["listings-raw"]
+    c["listings-raw"].create_index("coord")
+    c["listings-raw"].create_index("status")
+    c["listings-raw"].create_index("url", unique=True)
+
     c["listings"] = db["listings"]
+    c["listings"].create_index("id", unique=True)
+    c["listings"].create_index("url", unique=True)
+
     c["listings-live"] = db["listings-live"]
+    c["listings-live"].create_index("url", unique=True)
+
     c["listings-live-clean"] = db["listings-live-clean"]
+    c["listings-live-clean"].create_index("url", unique=True)
+
     c["urls"] = db["urls"]
+    c["urls"].create_index("url", unique=True)
+    c["urls"].create_index("status")
+
     c["urls-live"] = db["urls-live"]
+    c["urls-live"].create_index("url", unique=True)
+    c["urls-live"].create_index("status")
+
     c["locations"] = db["locations"]
+    c["locations"].create_index("id", unique=True)
+    c["locations"].create_index("status")
+
     c["search-terms"] = db["search-terms"]
+    c["search-terms"].create_index("term", unique=True)
+    c["search-terms"].create_index("status")
+
     c["inflation"] = db["inflation"]
+    c["inflation"].create_index("id", unique=True)
+
     c["status"] = db["status"]
 
 
@@ -227,6 +252,10 @@ def mark_search_terms_as_done(terms: list):
 
 
 def write_search_terms(terms: list):
+    # Add status
+    for term in terms:
+        term["status"] = "pending"
+
     try:
         c["search-terms"].insert_many(terms, ordered=False)
     except mongo.errors.BulkWriteError as e:

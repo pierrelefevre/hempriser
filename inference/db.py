@@ -38,8 +38,13 @@ def setup():
 
     global c
     c["listings"] = db["listings"]
+    c["listings"].create_index("id", unique=True)
+    c["listings"].create_index("url", unique=True)
+
     c["predictions"] = db["predictions"]
+
     c["inflation"] = db["inflation"]
+    c["inflation"].create_index("id", unique=True)
 
 
 setup()

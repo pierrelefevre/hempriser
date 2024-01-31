@@ -165,38 +165,50 @@ def clean_listing(listing_raw):
     return output
 
 
-while True:
-    raw_listings = db.get_pending_raw_listings(n=5000, random=False, live=True)
-    if len(raw_listings) == 0:
-        print("No more live listings to clean. Sleeping for 60 seconds...")
-        time.sleep(60)
-        continue
-
-    print(f"Cleaning {len(raw_listings)} listings...")
-
-    cleaned = []
-    err_due_to_missing_field = 0
-    for raw_listing in raw_listings:
-        try:
-            listing = clean_listing(raw_listing)
-            cleaned.append(listing)
-        except Exception as e:
-            if "Missing required field" in str(e):
-                err_due_to_missing_field += 1
-                db.mark_raw_listing_as_missing_fields(raw_listing["url"], live=True)
-                continue
-
-            print(
-                "Failed to clean listing ("
-                + str(raw_listing["url"])
-                + "), details: "
-                + str(e)
-            )
-            db.mark_raw_listing_as_failed(raw_listing["url"], live=True)
+def main():
+    while True:
+        raw_listings = db.get_pending_raw_listings(
+            n=5000, random=False, live=True)
+        if len(raw_listings) == 0:
+            print("No more live listings to clean. Sleeping for 60 seconds...")
+            time.sleep(60)
             continue
-    db.write_listings(cleaned, live=True)
-    db.mark_raw_listings_as_done([listing["url"] for listing in cleaned], live=True)
 
-    print(
-        f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields."
-    )
+        print(f"Cleaning {len(raw_listings)} listings...")
+
+        cleaned = []
+        err_due_to_missing_field = 0
+        for raw_listing in raw_listings:
+            try:
+                listing = clean_listing(raw_listing)
+                cleaned.append(listing)
+            except Exception as e:
+                if "Missing required field" in str(e):
+                    err_due_to_missing_field += 1
+                    db.mark_raw_listing_as_missing_fields(
+                        raw_listing["url"], live=True)
+                    continue
+
+                print(
+                    "Failed to clean listing ("
+                    + str(raw_listing["url"])
+                    + "), details: "
+                    + str(e)
+                )
+                db.mark_raw_listing_as_failed(raw_listing["url"], live=True)
+                continue
+        db.write_listings(cleaned, live=True)
+        db.mark_raw_listings_as_done([listing["url"]
+                                     for listing in cleaned], live=True)
+
+        print(
+            f"Done cleaning {len(cleaned)} listings. {err_due_to_missing_field} listings failed due to missing fields."
+        )
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Exiting...")
+        exit()

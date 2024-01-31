@@ -1,14 +1,16 @@
 import hemnet
 import db
+import time
 
-while True:
+
+def main():
     print("Getting pending search terms...")
     terms = db.get_pending_search_terms()
 
     done = []
     for item in terms:
         try:
-            locs = hemnet.get_location_ids()
+            locs = hemnet.get_location_ids(item["term"])
             curr = item["term"]
 
             print(f"Found {len(locs)} locations for {curr}")
@@ -19,8 +21,19 @@ while True:
             done.append(curr)
 
         except Exception as e:
-            print(e)
-            print(f"Failed to get locations for {curr}")
+            if "rate limit" in str(e):
+                print("Rate limit, sleeping for 1 minute...")
+                time.sleep(60)
+            else:
+                print(f"Failed to get locations for {curr}")
 
     print(f"Marking {len(done)} search terms as done...")
     db.mark_search_terms_as_done(done)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Exiting...")
+        exit()

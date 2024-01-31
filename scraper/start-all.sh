@@ -28,10 +28,10 @@ threads=$1
 
 # Starting Python scripts in the specified number of threads
 for i in $(seq 1 $threads); do
-    # python /etc/scraper/get_ids.py &
-    # python /etc/scraper/get_listings_clean.py &
-    # python /etc/scraper/get_listings_raw.py &
-    # python /etc/scraper/get_urls.py &
+    python /etc/scraper/get_ids.py &
+    python /etc/scraper/get_listings_clean.py &
+    python /etc/scraper/get_listings_raw.py &
+    python /etc/scraper/get_urls.py &
     python /etc/scraper/patch_coords.py &
 done
 

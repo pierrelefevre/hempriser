@@ -35,7 +35,7 @@ def get_urls(location_id, page, live=False):
 
         html = response.text
 
-        json_raw = html.split('<script type="application/ld+json">')[1].split(
+        json_raw = html.split('<script type="application/ld+json" id="jsonld-itemlist" data-testid="jsonld-itemlist">')[1].split(
             "</script>"
         )[0]
 
@@ -48,7 +48,7 @@ def get_urls(location_id, page, live=False):
 
         return urls
 
-    except:
+    except Exception as e:
         return []
 
 
@@ -123,11 +123,15 @@ def get_location_ids(query: str = "gamla stan", limit: int = 2000):
     )
     response = requests.post(url, headers=headers, data=payload)
 
+    # if too many requests, return as error so we can sleep
+    if response.status_code == 429:
+        raise Exception("rate limit")
+
+    locs = []
+
     try:
         json_data = response.json()
         hits = json_data["data"]["autocompleteLocations"]["hits"]
-
-        locs = []
 
         for location in hits:
             loc = {}
@@ -139,7 +143,7 @@ def get_location_ids(query: str = "gamla stan", limit: int = 2000):
 
             locs.append(loc)
 
-    except:
+    except Exception:
         print("Error getting location ids")
 
     return locs
