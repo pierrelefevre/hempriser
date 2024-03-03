@@ -21,3 +21,5 @@ jobs:
           push: true
           tags: pierrelf/hempriser:frontend
           file: frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          
