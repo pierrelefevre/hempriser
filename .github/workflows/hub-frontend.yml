@@ -5,6 +5,7 @@ name: docker hub frontend
       - main
     paths:
       - 'frontend/**'
+      - ".github/workflows/hub-frontend.yml"
 jobs:
   docker:
     runs-on: ubuntu-latest

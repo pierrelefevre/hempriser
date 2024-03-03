@@ -6,6 +6,7 @@ name: docker hub api
     paths:
       - 'api/**'
       - 'models/**'
+      - ".github/workflows/hub-api.yml"
 
 jobs:
   docker:

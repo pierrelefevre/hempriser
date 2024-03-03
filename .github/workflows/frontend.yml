@@ -5,6 +5,7 @@ name: kthcloud-ci-frontend
       - main
     paths:
       - 'frontend/**'
+      - ".github/workflows/frontend.yml"
 jobs:
   docker:
     runs-on: ubuntu-latest
