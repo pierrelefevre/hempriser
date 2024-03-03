@@ -1,4 +1,4 @@
-export const api_url = "https://bostadspriser-api.app.cloud.cbh.kth.se";
+export const api_url = "https://api.hempriser.se";
 // export const api_url = "http://localhost:8080";
 
 export const getListings = async (page, pageSize) => {
