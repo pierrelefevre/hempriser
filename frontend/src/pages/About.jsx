@@ -308,13 +308,13 @@ const About = () => {
         <CardContent>
           <Stack spacing={2}>
             <Typography variant="body1">
-              Bostadspriser is a tool for predicting the price of a house in
+              Hempriser is a tool for predicting the price of a house in
               Sweden. It is based on a machine learning model trained on data
               from Hemnet.
             </Typography>
             <Typography variant="body1">
               View the source on{" "}
-              <a href="https://github.com/pierrelefevre/bostadspriser">
+              <a href="https://github.com/pierrelefevre/hempriser">
                 GitHub
               </a>
               .
