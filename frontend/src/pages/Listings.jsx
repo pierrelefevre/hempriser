@@ -79,6 +79,8 @@ const Listings = () => {
     };
 
     Object.keys(listing.prediction).forEach((key) => {
+      if (!listing.prediction[key]) return;
+
       if (key.includes("with-askingPrice")) {
         withAskingPrice = listing.prediction[key].prediction;
       } else {

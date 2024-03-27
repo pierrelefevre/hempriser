@@ -105,30 +105,34 @@ while True:
             print("Skipping listing without lat/long")
             continue
         prediction = {}
-        for model_name in models:
-            model = models[model_name]["model"]
-            scaler = models[model_name]["scaler"]
-            metadata = models[model_name]["metadata"]
+        for model_n, model_name in enumerate(models):
+            try:
+                model = models[model_name]["model"]
+                scaler = models[model_name]["scaler"]
+                metadata = models[model_name]["metadata"]
 
-            newListing = listing.copy()
-            if "without" in model_name:
-                del newListing["askingPrice"]
+                newListing = listing.copy()
+                if "without" in model_name:
+                    del newListing["askingPrice"]
 
-            if "housingCooperative" in listing.keys():
-                newListing["hasHousingCooperative"] = True
-                del newListing["housingCooperative"]
-            else:
-                newListing["hasHousingCooperative"] = False
+                if "housingCooperative" in listing.keys():
+                    newListing["hasHousingCooperative"] = True
+                    del newListing["housingCooperative"]
+                else:
+                    newListing["hasHousingCooperative"] = False
 
-            del newListing["streetAddress"]
-            del newListing["thumbnail"]
-            del newListing["_id"]
-            del newListing["createdAt"]
-            del newListing["url"]
-            del newListing["id"]
+                del newListing["streetAddress"]
+                del newListing["thumbnail"]
+                del newListing["_id"]
+                del newListing["createdAt"]
+                del newListing["url"]
+                del newListing["id"]
 
-            prediction[model_name] = predict(newListing, models[model_name])
-            print(f"Predicted {model_name} to {prediction[model_name]}")
+                prediction[model_name] = predict(newListing, models[model_name])
+                print(f"Predicted {model_name} to {prediction[model_name]}")
+            except Exception as e:
+                print(f"Failed to predict {model_name}, {e}")
+                prediction[model_name] = None
 
         db.write_prediction_live(listing["url"], prediction)
         total += 1
